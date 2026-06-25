@@ -23,7 +23,7 @@
         }
     </script>
 
-    <!-- Firebase SDK (Sirf Database rakha hai, Storage ka masla khatam kar diya) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -59,7 +59,6 @@
     <div id="cloud-loader">
         <div class="spinner"></div>
         <h2 class="heading text-2xl font-bold">Connecting to Cloud Database...</h2>
-        <p class="text-gold mt-2">Loading Chem Buddy Data</p>
     </div>
 
     <div id="app" style="display: none;">
@@ -114,7 +113,7 @@
                         <h2 class="heading text-4xl font-bold mb-4 text-navy">Explore Chemistry Topics</h2>
                         <div class="w-16 h-1 bg-gold mx-auto rounded"></div>
                     </div>
-                    <div id="course-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+                    <div id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
                 </div>
             </section>
 
@@ -178,7 +177,7 @@
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
-                            <thead><tr class="bg-gray-100"><th class="p-3">Course Name</th><th class="p-3">Urdu Name</th><th class="p-3">Duration</th><th class="p-3">Actions</th></tr></thead>
+                            <thead><tr class="bg-gray-100"><th class="p-3">Course Name</th><th class="p-3">Urdu Name</th><th class="p-3">Description</th><th class="p-3">Actions</th></tr></thead>
                             <tbody id="table-admin-courses"></tbody>
                         </table>
                     </div>
@@ -239,13 +238,11 @@
             </header>
             <div class="container mx-auto p-4 md:p-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
                     <div class="bg-white rounded shadow p-6 col-span-1 border-t-4 border-blue text-center h-fit">
                         <img id="s-dash-img" src="" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-200 object-cover" alt="Profile">
                         <h2 class="text-xl font-bold mb-2 text-navy" id="s-dash-name"></h2>
                         <p class="text-sm mb-2">Course: <span id="st-dash-course" class="font-bold text-blue"></span></p>
                     </div>
-
                     <div class="col-span-1 md:col-span-2 space-y-6">
                         <div class="bg-white rounded shadow p-6">
                             <h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-bullhorn text-gold"></i> Notices</h2>
@@ -261,33 +258,30 @@
         </div>
 
         <!-- ==================== MODALS ==================== -->
+        <div id="modal-free-trial" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-gold p-4 text-navy font-bold text-lg"><i class="fas fa-flask"></i> Book a Free Trial</div><div class="p-6 space-y-4"><input type="text" id="trial-name" placeholder="Your Name" class="w-full p-2 border rounded bg-gray-50"><input type="text" id="trial-phone" placeholder="Phone Number" class="w-full p-2 border rounded bg-gray-50"><select id="trial-course" class="w-full p-2 border rounded bg-gray-50"></select><div class="flex gap-2 pt-2"><button type="button" onclick="submitTrial()" class="flex-1 bg-gold text-navy py-2 rounded font-bold shadow hover:bg-yellow-500">Submit Request</button><button type="button" onclick="closeModal('modal-free-trial')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
         
-        <div id="modal-free-trial" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4">
+        <div id="modal-admin-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-navy p-4 text-white text-center font-bold">Admin Login</div><div class="p-6"><input type="text" id="log-admin-user" placeholder="Enter Username" class="w-full mb-4 p-3 border rounded"><input type="password" id="log-admin-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('admin')" class="w-full py-3 bg-navy text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-admin-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
+        <div id="modal-teacher-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-emerald p-4 text-white text-center font-bold">Teacher Login</div><div class="p-6"><input type="password" id="log-teacher-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('teacher')" class="w-full py-3 bg-emerald text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-teacher-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
+        <div id="modal-student-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-blue p-4 text-white text-center font-bold">Student Login</div><div class="p-6"><input type="password" id="log-student-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('student')" class="w-full py-3 bg-blue text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-student-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
+
+        <div id="modal-add-teacher" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-emerald p-4 text-white font-bold">Add Teacher</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-t-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-t-name" placeholder="Teacher Name" class="w-full p-2 border rounded"><select id="add-t-course" class="w-full p-2 border rounded"></select><input type="text" id="add-t-pass" placeholder="Enter Manual Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveTeacher()" class="flex-1 bg-emerald text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-teacher')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
+        <div id="modal-add-student" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-blue p-4 text-white font-bold">Add Student</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-s-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-s-name" placeholder="Student Name" class="w-full p-2 border rounded"><select id="add-s-course" class="w-full p-2 border rounded"></select><select id="add-s-teacher" class="w-full p-2 border rounded"></select><input type="text" id="add-s-pass" placeholder="Enter Manual Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveStudent()" class="flex-1 bg-blue text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-student')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
+        
+        <div id="modal-add-course" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4">
             <div class="bg-white rounded shadow-2xl w-full max-w-md">
-                <div class="bg-gold p-4 text-navy font-bold text-lg"><i class="fas fa-flask"></i> Book a Free Trial</div>
+                <div class="bg-gold p-4 text-navy font-bold">Add New Course</div>
                 <div class="p-6 space-y-4">
-                    <input type="text" id="trial-name" placeholder="Your Name" class="w-full p-2 border rounded bg-gray-50">
-                    <input type="text" id="trial-phone" placeholder="Phone Number" class="w-full p-2 border rounded bg-gray-50">
-                    <select id="trial-course" class="w-full p-2 border rounded bg-gray-50"></select>
+                    <input type="text" id="add-c-name" placeholder="Course Name (e.g. Physical Chemistry)" class="w-full p-2 border rounded">
+                    <input type="text" id="add-c-urdu" placeholder="Urdu Name (e.g. فزیکل کیمسٹری)" class="w-full p-2 border rounded urdu">
+                    <textarea id="add-c-desc" placeholder="Short Description..." class="w-full p-2 border rounded" rows="2"></textarea>
                     <div class="flex gap-2 pt-2">
-                        <button type="button" onclick="submitTrial()" class="flex-1 bg-gold text-navy py-2 rounded font-bold shadow hover:bg-yellow-500">Submit Request</button>
-                        <button type="button" onclick="closeModal('modal-free-trial')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button>
+                        <button type="button" onclick="saveCourse()" class="flex-1 bg-gold text-navy py-2 rounded font-bold">Save</button>
+                        <button type="button" onclick="closeModal('modal-add-course')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Login Modals -->
-        <div id="modal-admin-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-navy p-4 text-white text-center font-bold">Admin Login</div><div class="p-6"><input type="text" id="log-admin-user" placeholder="Enter Username" class="w-full mb-4 p-3 border rounded"><input type="password" id="log-admin-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('admin')" class="w-full py-3 bg-navy text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-admin-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
-        <div id="modal-teacher-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-emerald p-4 text-white text-center font-bold">Teacher Login</div><div class="p-6"><input type="password" id="log-teacher-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('teacher')" class="w-full py-3 bg-emerald text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-teacher-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
-        <div id="modal-student-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-blue p-4 text-white text-center font-bold">Student Login</div><div class="p-6"><input type="password" id="log-student-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('student')" class="w-full py-3 bg-blue text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-student-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
-
-        <!-- Add Modals -->
-        <div id="modal-add-teacher" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-emerald p-4 text-white font-bold">Add Teacher</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-t-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-t-name" placeholder="Teacher Name" class="w-full p-2 border rounded"><select id="add-t-course" class="w-full p-2 border rounded"></select><input type="text" id="add-t-pass" placeholder="Enter Manual Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveTeacher()" class="flex-1 bg-emerald text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-teacher')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
-        <div id="modal-add-student" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-blue p-4 text-white font-bold">Add Student</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-s-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-s-name" placeholder="Student Name" class="w-full p-2 border rounded"><select id="add-s-course" class="w-full p-2 border rounded"></select><select id="add-s-teacher" class="w-full p-2 border rounded"></select><input type="text" id="add-s-pass" placeholder="Enter Manual Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveStudent()" class="flex-1 bg-blue text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-student')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
-        <div id="modal-add-course" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-gold p-4 text-navy font-bold">Add New Course</div><div class="p-6 space-y-4"><input type="text" id="add-c-name" placeholder="Course Name (e.g. Physical Chemistry)" class="w-full p-2 border rounded"><input type="text" id="add-c-urdu" placeholder="Urdu Name (e.g. فزیکل کیمسٹری)" class="w-full p-2 border rounded urdu"><input type="text" id="add-c-dur" placeholder="Duration (e.g. 3 Months)" class="w-full p-2 border rounded"><div class="flex gap-2 pt-2"><button type="button" onclick="saveCourse()" class="flex-1 bg-gold text-navy py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-course')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
-
-        <!-- Update Modals -->
         <div id="modal-upd-teacher" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-emerald p-4 text-white font-bold"><i class="fas fa-edit"></i> Admin: Edit Teacher</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">New Profile Image (Optional)</label><input type="file" id="upd-t-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="upd-t-name" placeholder="Update Name" class="w-full p-2 border rounded"><input type="text" id="upd-t-pass" placeholder="Update Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveUpdTeacher()" class="flex-1 bg-emerald text-white py-2 rounded font-bold">Update</button><button type="button" onclick="closeModal('modal-upd-teacher')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
         <div id="modal-upd-student" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-blue p-4 text-white font-bold"><i class="fas fa-edit"></i> Admin: Edit Student</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">New Profile Image (Optional)</label><input type="file" id="upd-s-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="upd-s-name" placeholder="Update Name" class="w-full p-2 border rounded"><input type="text" id="upd-s-pass" placeholder="Update Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveUpdStudent()" class="flex-1 bg-blue text-white py-2 rounded font-bold">Update</button><button type="button" onclick="closeModal('modal-upd-student')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
     </div>
@@ -298,10 +292,7 @@
             apiKey: "AIzaSyBsr72VFXwgW3dsJyhjGnisWgtlSA4ynVY",
             authDomain: "school-c9633.firebaseapp.com",
             databaseURL: "https://school-c9633-default-rtdb.asia-southeast1.firebasedatabase.app/",
-            projectId: "school-c9633",
-            storageBucket: "school-c9633.appspot.com", 
-            messagingSenderId: "293275030223",
-            appId: "1:293275030223:web:7394cb9fe64f72c1019dba"
+            projectId: "school-c9633"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -309,8 +300,6 @@
 
         var curTeacher = null; var curStudent = null; var editTargetId = null;
         var placeholderImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="; 
-        
-        // RAM Storage Bypass Array - File yahan se direct cloud jayegi, localStorage block nahi karegi
         var cloudPDFs = []; 
 
         function initCloudDB() {
@@ -331,8 +320,6 @@
                 if(data.qa_s) localStorage.setItem('qa_s', JSON.stringify(data.qa_s)); else initDefault('qa_s');
                 if(data.qa_n) localStorage.setItem('qa_n', JSON.stringify(data.qa_n)); else initDefault('qa_n');
                 if(data.qa_tr) localStorage.setItem('qa_tr', JSON.stringify(data.qa_tr)); else initDefault('qa_tr');
-                
-                // PDF aur Images sirf Cloud variables mein rahengi
                 if(data.qa_p) cloudPDFs = data.qa_p; else cloudPDFs = [];
 
                 document.getElementById('cloud-loader').style.display = 'none';
@@ -347,14 +334,21 @@
             });
         }
 
+        // DEFAULTS UPDATED WITH NEW CHEMISTRY COURSES & DESCRIPTIONS (Duration Removed)
         function initDefault(key) {
             if(key === 'qa_c') {
-                var defC = [{ id: 'c1', name: 'Basic Chemistry', nameUrdu: 'بنیادی کیمسٹری', duration: '2 Months', fee: 'Free' }, { id: 'c2', name: 'Organic Chemistry', nameUrdu: 'نامیاتی کیمسٹری', duration: '4 Months', fee: '$50' }];
+                var defC = [
+                    { id: 'c1', name: 'Analytical Chemistry', nameUrdu: 'انالیٹیکل کیمسٹری', fee: 'Paid', desc: 'Matter ki janch partal (miqdar aur qisam) aur components ki pehchan.' },
+                    { id: 'c2', name: 'Biochemistry', nameUrdu: 'بائیو کیمسٹری', fee: 'Paid', desc: 'Zinda jandaron ke andar hone walay chemical processes ki study.' },
+                    { id: 'c3', name: 'Environmental Chemistry', nameUrdu: 'ماحولیاتی کیمسٹری', fee: 'Paid', desc: 'Hawa, pani aur matti mein pollution aur chemical changes ka mutaila.' },
+                    { id: 'c4', name: 'Materials Science', nameUrdu: 'میٹیریل سائنس', fee: 'Paid', desc: 'Khas khusoosiyat walay naye materials (jaise nanomaterials) banana.' },
+                    { id: 'c5', name: 'Forensic Chemistry', nameUrdu: 'فارنزک کیمسٹری', fee: 'Paid', desc: 'Jurm ki tehqiqat (DNA, toxicology) mein chemical analysis ka istemal.' },
+                    { id: 'c6', name: 'Pharmaceutical Chemistry', nameUrdu: 'فارماسیوٹیکل کیمسٹری', fee: 'Paid', desc: 'Nayi dawaiyon (medicines) ki tayari, testing aur behtari.' }
+                ];
                 localStorage.setItem('qa_c', JSON.stringify(defC));
             } else { localStorage.setItem(key, JSON.stringify([])); }
         }
 
-        // Custom Get/Set jo PDF ko browser ki local memory mein ja kar crash hone se bachaye
         function getDB(key) { 
             if(key === 'qa_p') return cloudPDFs;
             var d = localStorage.getItem(key); 
@@ -362,29 +356,68 @@
         }
 
         function setDB(key, data) { 
-            if(key === 'qa_p') {
-                cloudPDFs = data;
-            } else {
-                localStorage.setItem(key, JSON.stringify(data));
-            }
+            if(key === 'qa_p') { cloudPDFs = data; } 
+            else { localStorage.setItem(key, JSON.stringify(data)); }
             database.ref('chem_buddy/' + key).set(data).catch(function(err){ console.log("Cloud update error:", err); });
         }
-        
         function generateId() { return Math.random().toString(36).substr(2, 9); }
 
-        /* ==================== UI HELPERS ==================== */
-        function openModal(id) { document.getElementById(id).classList.add('active'); if(id==='modal-free-trial'){ document.getElementById('trial-name').value=''; document.getElementById('trial-phone').value=''; populateDropdown('trial-course', getDB('qa_c')); } if(id==='modal-add-teacher'){ document.getElementById('add-t-name').value=''; document.getElementById('add-t-pass').value=''; populateDropdown('add-t-course', getDB('qa_c')); document.getElementById('add-t-img').value=''; } if(id==='modal-add-student'){ document.getElementById('add-s-name').value=''; document.getElementById('add-s-pass').value=''; populateDropdown('add-s-course', getDB('qa_c')); populateTeacherDropdown(); document.getElementById('add-s-img').value=''; } if(id==='modal-add-course'){ document.getElementById('add-c-name').value=''; document.getElementById('add-c-urdu').value=''; document.getElementById('add-c-dur').value=''; } }
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            if(id==='modal-free-trial'){ document.getElementById('trial-name').value=''; document.getElementById('trial-phone').value=''; populateDropdown('trial-course', getDB('qa_c')); } 
+            if(id==='modal-add-teacher'){ document.getElementById('add-t-name').value=''; document.getElementById('add-t-pass').value=''; populateDropdown('add-t-course', getDB('qa_c')); document.getElementById('add-t-img').value=''; } 
+            if(id==='modal-add-student'){ document.getElementById('add-s-name').value=''; document.getElementById('add-s-pass').value=''; populateDropdown('add-s-course', getDB('qa_c')); populateTeacherDropdown(); document.getElementById('add-s-img').value=''; } 
+            if(id==='modal-add-course'){ document.getElementById('add-c-name').value=''; document.getElementById('add-c-urdu').value=''; document.getElementById('add-c-desc').value=''; } 
+        }
+        
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function switchView(id) { document.querySelectorAll('.view-section').forEach(function(e){ e.classList.remove('active'); }); document.getElementById('view-'+id).classList.add('active'); window.scrollTo(0,0); }
         function switchAdminTab(id) { document.querySelectorAll('.admin-tab').forEach(function(e){ e.classList.add('hidden'); }); document.getElementById(id).classList.remove('hidden'); }
         function populateDropdown(selectId, items) { var sel = document.getElementById(selectId); if(!sel) return; sel.innerHTML=''; for(var i=0; i<items.length; i++){ var o = document.createElement('option'); o.value = items[i].id; o.innerHTML = items[i].name; sel.appendChild(o); } }
         function populateTeacherDropdown() { var sel = document.getElementById('add-s-teacher'); var t = getDB('qa_t'); var c = getDB('qa_c'); sel.innerHTML='<option value="">-- Assign Teacher --</option>'; for(var i=0; i<t.length; i++){ var o = document.createElement('option'); o.value = t[i].id; o.innerHTML = t[i].name; sel.appendChild(o); } }
 
-        /* ==================== LANDING & TRIALS ==================== */
-        function renderCoursesLanding() { var c = getDB('qa_c'); var grid = document.getElementById('course-grid'); if(!grid) return; grid.innerHTML = ''; for(var i=0; i<c.length; i++){ grid.innerHTML += "<div class='bg-cream rounded-xl shadow p-8 border border-gold/20'><div class='text-blue text-4xl mb-4'><i class='fas fa-flask'></i></div><h3 class='heading text-xl font-bold'>" + c[i].name + "</h3><h4 class='urdu text-gray-500 mb-4'>" + c[i].nameUrdu + "</h4><p class='text-sm font-bold text-navy'>Duration: " + c[i].duration + "</p></div>"; } }
-        function submitTrial() { var n = document.getElementById('trial-name').value.trim(); var p = document.getElementById('trial-phone').value.trim(); var c = document.getElementById('trial-course').value; if(!n || !p) return alert("Fill Name and Phone."); var tr = getDB('qa_tr'); tr.push({ id: generateId(), name: n, phone: p, course: c, date: new Date().toLocaleDateString() }); setDB('qa_tr', tr); closeModal('modal-free-trial'); alert("Trial requested!"); }
+        function renderCoursesLanding() { 
+            var c = getDB('qa_c'); var grid = document.getElementById('course-grid'); if(!grid) return; grid.innerHTML = ''; 
+            for(var i=0; i<c.length; i++){ 
+                var descHtml = c[i].desc ? "<p class='text-sm text-gray-600 h-16 overflow-hidden'>" + c[i].desc + "</p>" : "";
+                grid.innerHTML += "<div class='bg-cream rounded-xl shadow p-8 border border-gold/20 flex flex-col'><div class='text-blue text-4xl mb-4'><i class='fas fa-flask'></i></div><h3 class='heading text-xl font-bold text-navy'>" + c[i].name + "</h3><h4 class='urdu text-gray-500 mb-2'>" + c[i].nameUrdu + "</h4>" + descHtml + "</div>"; 
+            } 
+        }
+        
+        function submitTrial() { 
+            var n = document.getElementById('trial-name').value.trim(); 
+            var p = document.getElementById('trial-phone').value.trim(); 
+            var c = document.getElementById('trial-course').value; 
+            if(!n || !p) return alert("Fill Name and Phone."); 
+            
+            var tr = getDB('qa_tr'); 
+            tr.push({ id: generateId(), name: n, phone: p, course: c, date: new Date().toLocaleDateString() }); 
+            setDB('qa_tr', tr); 
+            
+            var myPhone = "YOUR_WHATSAPP_NUMBER"; // <--- APNA NUMBER YAHAN LIKHEIN
+            var myApiKey = "YOUR_API_KEY";        // <--- APNI API KEY YAHAN LIKHEIN
+            
+            if(myApiKey !== "YOUR_API_KEY") {
+                var cName = getCourseName(c, getDB('qa_c'));
+                var msg = encodeURIComponent("🔔 Chem Buddy Alert: Nayi Trial Request!\n\nName: " + n + "\nPhone: " + p + "\nCourse: " + cName + "\n\nFauran Admin Panel check karein.");
+                var url = "https://api.callmebot.com/whatsapp.php?phone=" + myPhone + "&text=" + msg + "&apikey=" + myApiKey;
+                fetch(url, { mode: 'no-cors' }).catch(function(e){ console.log("Alert Error"); });
+            }
 
-        /* ==================== AUTH & SESSION ==================== */
+            closeModal('modal-free-trial'); 
+            alert("Trial requested successfully!"); 
+        }
+
+        function resetWholeSystem() {
+            if(confirm('Khabardar! Aap ka pehle ka sab data (Students, Teachers, Courses) delete ho jayega aur sirf naye 6 Default Courses aa jayenge. Kya aap waqai reset karna chahte hain?')) {
+                database.ref('chem_buddy').remove().then(function() {
+                    localStorage.clear();
+                    alert("System Reset Successful! Page reload ho raha hai...");
+                    location.reload();
+                });
+            }
+        }
+
         function handleLogin(role) {
             if(role === 'admin') {
                 if(document.getElementById('log-admin-user').value.trim() === 'admin' && document.getElementById('log-admin-pass').value.trim() === 'chem5000') { closeModal('modal-admin-login'); sessionStorage.setItem('auth_role', 'admin'); loadAdminDashboard(); switchView('admin'); } else shakeEl('modal-admin-login');
@@ -402,7 +435,6 @@
         function shakeEl(id) { var e = document.getElementById(id).querySelector('.bg-white'); e.classList.remove('shake'); void e.offsetWidth; e.classList.add('shake'); }
         function logout() { curTeacher=null; curStudent=null; sessionStorage.removeItem('auth_role'); sessionStorage.removeItem('auth_user'); switchView('landing'); }
 
-        /* ==================== ADMIN DASHBOARD ==================== */
         function getCourseName(id, c) { for(var i=0; i<c.length; i++) if(c[i].id === id) return c[i].name; return "Unknown"; }
 
         function loadAdminDashboard() {
@@ -415,7 +447,10 @@
             for(var j=0; j<ss.length; j++) sTb.innerHTML += "<tr class='border-b'><td class='p-2'><img src='"+(ss[j].img||placeholderImg)+"' class='avatar-img'></td><td class='p-2'>"+ss[j].name+"</td><td class='p-2'>"+getCourseName(ss[j].course, cs)+"</td><td class='p-2 font-bold'>"+ss[j].password+"</td><td class='p-2 flex gap-2'><button type='button' onclick='editStudentAdmin(\""+ss[j].id+"\")' class='text-blue-600 bg-blue-100 px-3 py-1 rounded'>Edit</button><button type='button' onclick='deleteRecord(\"qa_s\",\""+ss[j].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
 
             var cTb = document.getElementById('table-admin-courses'); cTb.innerHTML='';
-            for(var k=0; k<cs.length; k++) cTb.innerHTML += "<tr class='border-b'><td class='p-2 font-bold'>"+cs[k].name+"</td><td class='p-2 urdu'>"+cs[k].nameUrdu+"</td><td class='p-2'>"+cs[k].duration+"</td><td class='p-2'><button type='button' onclick='deleteRecord(\"qa_c\",\""+cs[k].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
+            for(var k=0; k<cs.length; k++) {
+                var descShort = cs[k].desc ? cs[k].desc.substring(0,30) + '...' : '-';
+                cTb.innerHTML += "<tr class='border-b'><td class='p-2 font-bold'>"+cs[k].name+"</td><td class='p-2 urdu'>"+cs[k].nameUrdu+"</td><td class='p-2 text-sm text-gray-500'>"+descShort+"</td><td class='p-2'><button type='button' onclick='deleteRecord(\"qa_c\",\""+cs[k].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
+            }
 
             var trTb = document.getElementById('table-admin-trials'); trTb.innerHTML='';
             for(var m=0; m<trs.length; m++) trTb.innerHTML += "<tr class='border-b'><td class='p-2 text-sm'>"+trs[m].date+"</td><td class='p-2 font-bold'>"+trs[m].name+"</td><td class='p-2'>"+trs[m].phone+"</td><td class='p-2'>"+getCourseName(trs[m].course, cs)+"</td><td class='p-2'><button type='button' onclick='deleteRecord(\"qa_tr\",\""+trs[m].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
@@ -428,7 +463,6 @@
             setDB(key, res); if(key === 'qa_c') renderCoursesLanding(); loadAdminDashboard();
         }
 
-        /* --- ADMIN EDIT PROFILES --- */
         function editTeacherAdmin(id) { editTargetId = id; var ts = getDB('qa_t'); var t = null; for(var i=0; i<ts.length; i++) if(ts[i].id == id) t = ts[i]; if(!t) return; document.getElementById('upd-t-name').value = t.name; document.getElementById('upd-t-pass').value = t.password; document.getElementById('upd-t-img').value = ''; document.getElementById('modal-upd-teacher').classList.add('active'); }
         function saveUpdTeacher() { var n = document.getElementById('upd-t-name').value.trim(); var p = document.getElementById('upd-t-pass').value.trim(); if(!n || !p) return alert('Name/Password empty.'); var file = document.getElementById('upd-t-img').files[0]; if(file) { var r = new FileReader(); r.onload = function(e){ try{ finishUpdTeacher(n,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { var ts = getDB('qa_t'); var oldImg = ""; for(var i=0; i<ts.length; i++) if(ts[i].id == editTargetId) oldImg = ts[i].img; finishUpdTeacher(n, p, oldImg); } }
         function finishUpdTeacher(n, p, imgData) { var t = getDB('qa_t'); for(var i=0; i<t.length; i++) if(t[i].id == editTargetId){ t[i].name = n; t[i].password = p; t[i].img = imgData; } setDB('qa_t', t); closeModal('modal-upd-teacher'); loadAdminDashboard(); alert("Updated!"); }
@@ -437,18 +471,27 @@
         function saveUpdStudent() { var n = document.getElementById('upd-s-name').value.trim(); var p = document.getElementById('upd-s-pass').value.trim(); if(!n || !p) return alert('Name/Password empty.'); var file = document.getElementById('upd-s-img').files[0]; if(file) { var r = new FileReader(); r.onload = function(e){ try{ finishUpdStudent(n,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { var ss = getDB('qa_s'); var oldImg = ""; for(var i=0; i<ss.length; i++) if(ss[i].id == editTargetId) oldImg = ss[i].img; finishUpdStudent(n, p, oldImg); } }
         function finishUpdStudent(n, p, imgData) { var s = getDB('qa_s'); for(var i=0; i<s.length; i++) if(s[i].id == editTargetId){ s[i].name = n; s[i].password = p; s[i].img = imgData; } setDB('qa_s', s); closeModal('modal-upd-student'); loadAdminDashboard(); alert("Updated!"); }
 
-        /* --- SAVE NEW LOGIC --- */
         function saveTeacher() { var n = document.getElementById('add-t-name').value.trim(); var c = document.getElementById('add-t-course').value; var p = document.getElementById('add-t-pass').value.trim(); if(!n || !c || !p) return alert('Fill fields!'); var file = document.getElementById('add-t-img').files[0]; if(file){ var r = new FileReader(); r.onload = function(e){ try{ finishSaveTeacher(n,c,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { finishSaveTeacher(n,c,p,""); } }
         function finishSaveTeacher(n, c, p, imgData) { var t = getDB('qa_t'); t.push({ id: generateId(), name: n, course: c, password: p, img: imgData }); setDB('qa_t', t); closeModal('modal-add-teacher'); loadAdminDashboard(); }
         function saveStudent() { var n = document.getElementById('add-s-name').value.trim(); var c = document.getElementById('add-s-course').value; var tid = document.getElementById('add-s-teacher').value; var p = document.getElementById('add-s-pass').value.trim(); if(!n || !c || !tid || !p) return alert('Fill fields!'); var file = document.getElementById('add-s-img').files[0]; if(file){ var r = new FileReader(); r.onload = function(e){ try{ finishSaveStudent(n,c,tid,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { finishSaveStudent(n,c,tid,p,""); } }
         function finishSaveStudent(n, c, tid, p, imgData) { var s = getDB('qa_s'); s.push({ id: generateId(), name: n, course: c, teacherId: tid, password: p, img: imgData }); setDB('qa_s', s); closeModal('modal-add-student'); loadAdminDashboard(); }
-        function saveCourse() { var n = document.getElementById('add-c-name').value.trim(); var ur = document.getElementById('add-c-urdu').value.trim(); var dur = document.getElementById('add-c-dur').value.trim(); if(!n) return alert('Name required!'); var c = getDB('qa_c'); c.push({ id: generateId(), name: n, nameUrdu: ur, duration: dur, fee: 'Paid' }); setDB('qa_c', c); closeModal('modal-add-course'); loadAdminDashboard(); renderCoursesLanding(); }
+        
+        function saveCourse() { 
+            var n = document.getElementById('add-c-name').value.trim(); 
+            var ur = document.getElementById('add-c-urdu').value.trim(); 
+            var desc = document.getElementById('add-c-desc').value.trim(); 
+            if(!n) return alert('Name required!'); 
+            var c = getDB('qa_c'); 
+            c.push({ id: generateId(), name: n, nameUrdu: ur, desc: desc, fee: 'Paid' }); 
+            setDB('qa_c', c); 
+            closeModal('modal-add-course'); 
+            loadAdminDashboard(); 
+            renderCoursesLanding(); 
+        }
 
-        /* ==================== TEACHER DASHBOARD ==================== */
         function loadTeacherDashboard() { document.getElementById('teacher-name-display').innerHTML = curTeacher.name; document.getElementById('t-dash-img').src = curTeacher.img || placeholderImg; var ss = getDB('qa_s'); var sel = document.getElementById('ts-select'); sel.innerHTML = '<option value="all">All Students</option>'; for(var i=0; i<ss.length; i++) if(ss[i].teacherId === curTeacher.id) sel.innerHTML += '<option value="' + ss[i].id + '">' + ss[i].name + '</option>'; }
         function handlePostNotice() { var txt = document.getElementById('ts-notice-text').value; var tgt = document.getElementById('ts-select').value; if(!txt) return alert("Write notice!"); var n = getDB('qa_n'); n.push({ id: generateId(), teacherId: curTeacher.id, studentId: tgt, text: txt, date: new Date().toLocaleDateString() }); setDB('qa_n', n); document.getElementById('ts-notice-text').value=''; alert("Notice Posted!"); }
         
-        // DIRECT REALTIME DB UPLOAD (NO LIMIT EXCEED CRASH)
         function handlePDFUpload() { 
             var title = document.getElementById('ts-pdf-title').value; 
             var tgt = document.getElementById('ts-select').value; 
@@ -456,7 +499,6 @@
             var file = fileInput.files[0]; 
             
             if(!title || !file) return alert("Select title and Document!"); 
-            // 4MB ki safely limit lagayi hai
             if(file.size > 4 * 1024 * 1024) return alert("File size must be under 4MB!"); 
             
             var ext = file.name.split('.').pop(); 
@@ -479,18 +521,13 @@
                     date: new Date().toLocaleDateString() 
                 }); 
                 
-                // Saving ONLY to Firebase, Skipping localStorage
                 setDB('qa_p', p); 
-                document.getElementById('ts-pdf-title').value=''; 
-                fileInput.value=''; 
-                alert("File Uploaded Successfully!"); 
-                btn.innerHTML = oldText; 
-                btn.disabled = false;
+                document.getElementById('ts-pdf-title').value=''; fileInput.value=''; alert("File Uploaded Successfully!"); 
+                btn.innerHTML = oldText; btn.disabled = false;
             }; 
             reader.readAsDataURL(file); 
         }
 
-        /* ==================== STUDENT DASHBOARD ==================== */
         function loadStudentDashboard() { 
             document.getElementById('student-name-display').innerHTML = curStudent.name; 
             document.getElementById('s-dash-name').innerHTML = curStudent.name; 
