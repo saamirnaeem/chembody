@@ -37,6 +37,8 @@
         .float-up { animation: floatUp 0.8s ease-out forwards; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
         .shake { animation: shake 0.4s ease-in-out; }
+        @keyframes slideIn { 0% { opacity:0; transform:translateX(-20px); } 100% { opacity:1; transform:translateX(0); } }
+        .slide-in { animation: slideIn 0.4s ease-out forwards; }
 
         .modal { display: none; }
         .modal.active { display: flex; animation: floatUp 0.3s ease-out; }
@@ -117,10 +119,53 @@
                 </div>
             </section>
 
-            <footer class="bg-[#112233] text-gray-300 py-12 text-center">
-                <p>Chem Buddy Academy &copy; 2024. All Rights Reserved.</p>
-                <button type="button" onclick="openModal('modal-admin-login')" class="mt-6 font-semibold text-gray-500 hover:text-gold transition mx-auto flex items-center gap-2"><i class="fas fa-lock"></i> Admin Access</button>
-            </footer>
+            <footer class="bg-[#112233] text-gray-300 py-12">
+    <div class="container mx-auto px-4">
+        
+        <!-- Top Row: Brand + Contact -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8 pb-8 border-b border-gray-700">
+            
+            <!-- Brand -->
+            <div class="text-center md:text-left">
+                <div class="flex items-center gap-3 justify-center md:justify-start mb-2">
+                    <div class="w-10 h-10 rounded-full border-2 border-gold flex items-center justify-center bg-transparent text-gold text-xl"><i class="fas fa-atom"></i></div>
+                    <h3 class="heading text-xl font-bold text-white">Chem Buddy</h3>
+                </div>
+                <p class="text-gray-400 text-sm">Master the elements of chemistry with expert tutors.</p>
+            </div>
+
+            <!-- Contact Us Section -->
+            <div class="text-center md:text-right">
+                <h4 class="text-gold font-bold text-lg mb-4 uppercase tracking-wider">Contact Us</h4>
+                <div class="flex items-center gap-4 justify-center md:justify-end">
+                    
+                    <!-- WhatsApp Button (Number Hidden) -->
+                    <a href="https://wa.me/923034171659" target="_blank" rel="noopener noreferrer" 
+                       class="flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105 group">
+                        <i class="fab fa-whatsapp text-2xl group-hover:animate-bounce"></i>
+                        <span>WhatsApp Chat</span>
+                    </a>
+
+                    <!-- Email (Optional) -->
+                    <a href="aamirnaeem07@gmail.com" 
+                       class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-envelope text-lg"></i>
+                        <span>Email</span>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Copyright + Admin -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-500 text-sm">Chem Buddy Academy &copy; 2024. All Rights Reserved.</p>
+            <button type="button" onclick="openModal('modal-admin-login')" class="font-semibold text-gray-600 hover:text-gold transition flex items-center gap-2 text-sm">
+                <i class="fas fa-lock"></i> Admin Access
+            </button>
+        </div>
+    </div>
+</footer>
         </div>
 
         <!-- ==================== ADMIN DASHBOARD ==================== -->
@@ -238,20 +283,60 @@
             </header>
             <div class="container mx-auto p-4 md:p-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Left: Profile -->
                     <div class="bg-white rounded shadow p-6 col-span-1 border-t-4 border-blue text-center h-fit">
                         <img id="s-dash-img" src="" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-200 object-cover" alt="Profile">
                         <h2 class="text-xl font-bold mb-2 text-navy" id="s-dash-name"></h2>
                         <p class="text-sm mb-2">Course: <span id="st-dash-course" class="font-bold text-blue"></span></p>
                     </div>
+
+                    <!-- Right: Content -->
                     <div class="col-span-1 md:col-span-2 space-y-6">
+                        
+                        <!-- Notices -->
                         <div class="bg-white rounded shadow p-6">
                             <h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-bullhorn text-gold"></i> Notices</h2>
                             <ul id="st-notices-list" class="space-y-3"></ul>
                         </div>
+
+                        <!-- Study Materials -->
                         <div class="bg-white rounded shadow p-6">
                             <h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-download text-emerald"></i> Study Materials</h2>
                             <ul id="st-downloads-list" class="space-y-3"></ul>
                         </div>
+
+                        <!-- ========== NEW: ASK ANY QUESTION SECTION ========== -->
+                        <div class="bg-white rounded shadow p-6 border-t-4 border-gold">
+                            <h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-question-circle text-gold"></i> Any Question Ask</h2>
+                            
+                            <!-- Current Question Box -->
+                            <div id="active-question-box" class="mb-6 p-5 bg-gradient-to-br from-blue-50 to-cream rounded-xl border border-blue-200 shadow-inner">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">Q</div>
+                                    <div class="flex-1">
+                                        <p id="active-question-text" class="text-navy font-semibold text-lg leading-relaxed"></p>
+                                        <p class="text-xs text-gray-400 mt-2" id="active-question-date"></p>
+                                    </div>
+                                </div>
+                                <div class="mt-4 ml-13">
+                                    <textarea id="student-answer-input" rows="3" placeholder="Apna jawab yahan likhein..." class="w-full p-3 border-2 border-blue/30 rounded-lg focus:border-blue focus:outline-none transition text-navy font-medium"></textarea>
+                                    <button type="button" onclick="submitAnswer()" class="mt-3 bg-blue text-white px-6 py-2 rounded-lg font-bold shadow hover:bg-blue/90 transition flex items-center gap-2">
+                                        <i class="fas fa-paper-plane"></i> Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Recent Answered Questions -->
+                            <div>
+                                <h3 class="font-bold text-gray-600 text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <i class="fas fa-clock text-gold"></i> Recent
+                                </h3>
+                                <ul id="recent-questions-list" class="space-y-3 max-h-80 overflow-y-auto pr-1"></ul>
+                                <p id="no-recent-msg" class="text-gray-400 text-sm text-center py-4 hidden">Abhi tak koi recent sawal nahi.</p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -288,7 +373,7 @@
 
     <script>
         /* ==================== FIREBASE CONFIG ==================== */
-        const firebaseConfig = {
+        var firebaseConfig = {
             apiKey: "AIzaSyBsr72VFXwgW3dsJyhjGnisWgtlSA4ynVY",
             authDomain: "school-c9633.firebaseapp.com",
             databaseURL: "https://school-c9633-default-rtdb.asia-southeast1.firebasedatabase.app/",
@@ -296,11 +381,120 @@
         };
 
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        var database = firebase.database();
 
         var curTeacher = null; var curStudent = null; var editTargetId = null;
         var placeholderImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="; 
         var cloudPDFs = []; 
+
+        /* ========== CHEMISTRY QUESTIONS BANK ========== */
+        var chemistryQuestions = [
+            "Hydrogen peroxide (H2O2) mein Oxygen ki oxidation state kya hai aur yeh ek reducing agent hai ya oxidizing agent?",
+            "Periodic Table mein Group 17 ke elements ko Halogens kehte hain, unki electronegativity ka trend kya hai top se bottom ki taraf?",
+            "Le Chatelier's Principle ke mutabiq, agar ek exothermic reaction mein temperature barhayen to equilibrium kis taraf shift hoga?",
+            "Sodium (Na) jab paani ke sath react karta hai to Hydrogen gas aur NaOH banta hai — is reaction ka balanced chemical equation kya hai?",
+            "Bond energy aur Bond enthalpy mein kya farq hai? Kya dono ka matlab same hai?",
+            "Alkenes mein Markovnikov's Rule kya kehta hai? Ek example ke sath samjhayein.",
+            "pH scale 0 se 14 tak hoti hai — agar kisi solution ka pH 3 hai to iska [H+] concentration kya hoga?",
+            "Transition metals ke compounds mostly colored kyun hote hain? Iska kya scientific reason hai?",
+            "Grignard Reagent (RMgX) ko kyun banana mushkil hai aur isko banate waqt kya precautions liye jatay hain?",
+            "Arrhenius, Bronsted-Lowry aur Lewis — teenon acid-base theories mein kya farq hai?"
+        ];
+
+        /* ========== ACTIVE QUESTION TRACKER ========== */
+        var activeQuestionIndex = 0;
+        var currentActiveQuestion = null;
+
+        function getNextQuestion() {
+            /* Check if we already have an active unanswered question in storage */
+            var stored = localStorage.getItem('active_q_' + (curStudent ? curStudent.id : 'default'));
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            /* Otherwise pick next from bank */
+            var idx = activeQuestionIndex % chemistryQuestions.length;
+            var qObj = {
+                id: generateId(),
+                text: chemistryQuestions[idx],
+                date: new Date().toLocaleDateString(),
+                index: idx
+            };
+            activeQuestionIndex++;
+            if (curStudent) {
+                localStorage.setItem('active_q_' + curStudent.id, JSON.stringify(qObj));
+            }
+            return qObj;
+        }
+
+        function submitAnswer() {
+            var answerText = document.getElementById('student-answer-input').value.trim();
+            if (!answerText) {
+                alert("Jawab likhein pehle!");
+                return;
+            }
+            if (!currentActiveQuestion) return;
+
+            /* Save to recent questions in localStorage */
+            var recentKey = 'recent_q_' + (curStudent ? curStudent.id : 'default');
+            var recentArr = JSON.parse(localStorage.getItem(recentKey) || '[]');
+            
+            recentArr.unshift({
+                question: currentActiveQuestion.text,
+                answer: answerText,
+                date: new Date().toLocaleString()
+            });
+
+            /* Keep only last 20 recent */
+            if (recentArr.length > 20) recentArr = recentArr.slice(0, 20);
+            localStorage.setItem(recentKey, JSON.stringify(recentArr));
+
+            /* Remove active question so next one loads */
+            if (curStudent) {
+                localStorage.removeItem('active_q_' + curStudent.id);
+            }
+
+            /* Clear input and refresh */
+            document.getElementById('student-answer-input').value = '';
+            currentActiveQuestion = null;
+            loadQuestionSection();
+            alert("Jawab submit ho gaya! Recent me check karein.");
+        }
+
+        function loadQuestionSection() {
+            if (!curStudent) return;
+
+            /* Load active question */
+            currentActiveQuestion = getNextQuestion();
+            document.getElementById('active-question-text').innerText = currentActiveQuestion.text;
+            document.getElementById('active-question-date').innerText = currentActiveQuestion.date;
+
+            /* Load recent questions */
+            var recentKey = 'recent_q_' + curStudent.id;
+            var recentArr = JSON.parse(localStorage.getItem(recentKey) || '[]');
+            var listEl = document.getElementById('recent-questions-list');
+            var noMsg = document.getElementById('no-recent-msg');
+            listEl.innerHTML = '';
+
+            if (recentArr.length === 0) {
+                noMsg.classList.remove('hidden');
+            } else {
+                noMsg.classList.add('hidden');
+                for (var i = 0; i < recentArr.length; i++) {
+                    var item = recentArr[i];
+                    var html = '<li class="slide-in p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition">';
+                    html += '<div class="flex items-start gap-3">';
+                    html += '<div class="w-8 h-8 rounded-full bg-gold text-navy flex items-center justify-center flex-shrink-0 text-xs font-bold">Q</div>';
+                    html += '<div class="flex-1">';
+                    html += '<p class="font-semibold text-navy text-sm">' + item.question + '</p>';
+                    html += '<div class="mt-2 ml-4 pl-3 border-l-2 border-emerald">';
+                    html += '<p class="text-emerald-700 font-medium text-sm"><i class="fas fa-check-circle mr-1"></i>' + item.answer + '</p>';
+                    html += '</div>';
+                    html += '<p class="text-xs text-gray-400 mt-2"><i class="far fa-clock mr-1"></i>' + item.date + '</p>';
+                    html += '</div></div></li>';
+                    listEl.innerHTML += html;
+                }
+            }
+        }
 
         function initCloudDB() {
             document.getElementById('cloud-loader').style.display = 'flex';
@@ -334,7 +528,6 @@
             });
         }
 
-        // DEFAULTS UPDATED WITH NEW CHEMISTRY COURSES & DESCRIPTIONS (Duration Removed)
         function initDefault(key) {
             if(key === 'qa_c') {
                 var defC = [
@@ -394,12 +587,12 @@
             tr.push({ id: generateId(), name: n, phone: p, course: c, date: new Date().toLocaleDateString() }); 
             setDB('qa_tr', tr); 
             
-            var myPhone = "YOUR_WHATSAPP_NUMBER"; // <--- APNA NUMBER YAHAN LIKHEIN
-            var myApiKey = "YOUR_API_KEY";        // <--- APNI API KEY YAHAN LIKHEIN
+            var myPhone = "YOUR_WHATSAPP_NUMBER"; 
+            var myApiKey = "YOUR_API_KEY"; 
             
             if(myApiKey !== "YOUR_API_KEY") {
                 var cName = getCourseName(c, getDB('qa_c'));
-                var msg = encodeURIComponent("🔔 Chem Buddy Alert: Nayi Trial Request!\n\nName: " + n + "\nPhone: " + p + "\nCourse: " + cName + "\n\nFauran Admin Panel check karein.");
+                var msg = encodeURIComponent("Chem Buddy Alert: Nayi Trial Request!\n\nName: " + n + "\nPhone: " + p + "\nCourse: " + cName + "\n\nFauran Admin Panel check karein.");
                 var url = "https://api.callmebot.com/whatsapp.php?phone=" + myPhone + "&text=" + msg + "&apikey=" + myApiKey;
                 fetch(url, { mode: 'no-cors' }).catch(function(e){ console.log("Alert Error"); });
             }
@@ -537,23 +730,25 @@
             var notices = getDB('qa_n'); var nList = document.getElementById('st-notices-list'); nList.innerHTML = ''; 
             for(var i=0; i<notices.length; i++) {
                 if(notices[i].teacherId === curStudent.teacherId && (notices[i].studentId === 'all' || notices[i].studentId === curStudent.id)) {
-                    nList.innerHTML += "<li class='p-3 bg-yellow-50 border-l-4 border-gold text-navy text-sm shadow-sm'><b>" + notices[i].date + ":</b> " + notices[i].text + "</li>"; 
+                    nList.innerHTML += "<li class='p-3 bg-yellow-50 border-l-4 border-gold text-navy text-sm shadow rounded'><strong>" + notices[i].date + ":</strong> " + notices[i].text + "</li>";
                 }
             }
-            
-            var pdfs = getDB('qa_p'); var pList = document.getElementById('st-downloads-list'); pList.innerHTML = ''; 
+            if(notices.length === 0 || nList.innerHTML === '') nList.innerHTML = "<li class='text-gray-400 text-sm'>Koi notice nahi abhi.</li>";
+
+            var pdfs = getDB('qa_p'); var pList = document.getElementById('st-downloads-list'); pList.innerHTML = '';
             for(var j=0; j<pdfs.length; j++) {
                 if(pdfs[j].teacherId === curStudent.teacherId && (pdfs[j].studentId === 'all' || pdfs[j].studentId === curStudent.id)) {
-                    var ext = pdfs[j].ext ? pdfs[j].ext.toLowerCase() : 'pdf';
-                    var isImg = ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif';
-                    var icon = isImg ? 'fas fa-image text-blue-500' : 'fas fa-file-pdf text-red-500';
-                    
-                    pList.innerHTML += "<li class='p-3 border rounded flex justify-between items-center bg-gray-50'><div class='flex items-center gap-3'><i class='" + icon + " text-2xl'></i><div class='font-bold text-navy'>" + pdfs[j].name + "</div></div><div class='flex gap-2'><a href='" + pdfs[j].data + "' target='_blank' download='" + pdfs[j].name + "." + ext + "' class='bg-blue text-white px-3 py-1 rounded text-sm'>Download</a></div></li>"; 
+                    pList.innerHTML += "<li class='p-3 bg-emerald-50 border-l-4 border-emerald text-navy text-sm shadow rounded flex justify-between items-center'><div><i class='fas fa-file-pdf text-emerald mr-2'></i><strong>" + pdfs[j].name + "</strong><span class='text-gray-400 text-xs ml-2'>(" + pdfs[j].date + ")</span></div><a href='" + pdfs[j].data + "' download='" + pdfs[j].name + "." + pdfs[j].ext + "' class='bg-emerald text-white px-3 py-1 rounded text-xs font-bold hover:bg-emerald/80 transition no-underline'>Download</a></li>";
                 }
             }
+            if(pdfs.length === 0 || pList.innerHTML === '') pList.innerHTML = "<li class='text-gray-400 text-sm'>Koi material upload nahi hua abhi.</li>";
+
+            /* Load the new Question Section */
+            loadQuestionSection();
         }
 
-        window.onload = function() { initCloudDB(); };
+        /* ==================== START APP ==================== */
+        initCloudDB();
     </script>
 </body>
 </html>
