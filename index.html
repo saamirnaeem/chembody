@@ -5,25 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chem Buddy | Online Chemistry Learning</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { cream: '#FDF6E3', gold: '#C9A84C', blue: '#1E5AA8', navy: '#1A3A5C', emerald: '#10B981' }
+                    colors: { cream: '#FDF6E3', gold: '#C9A84C', blue: '#1E5AA8', navy: '#1A3A5C', emerald: '#10B981', darkbg: '#0B1D33', darkbg2: '#0F2847', lightblue: '#E8F1FA', lightblue2: '#D6E8F8' }
                 }
             }
         }
     </script>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -32,13 +26,15 @@
         h1, h2, h3, h4, .heading { font-family: 'Playfair Display', serif; }
         .urdu { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; }
         
-        .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0.05' fill='%23C9A84C'/%3E%3C/svg%3E"); }
         @keyframes floatUp { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         .float-up { animation: floatUp 0.8s ease-out forwards; }
+        .float-up-delay { animation: floatUp 0.8s ease-out 0.3s forwards; opacity: 0; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
         .shake { animation: shake 0.4s ease-in-out; }
         @keyframes slideIn { 0% { opacity:0; transform:translateX(-20px); } 100% { opacity:1; transform:translateX(0); } }
         .slide-in { animation: slideIn 0.4s ease-out forwards; }
+        @keyframes heroImgFloat { 0%,100%{ transform: translateY(0px); } 50%{ transform: translateY(-10px); } }
+        .hero-img-float { animation: heroImgFloat 5s ease-in-out infinite; }
 
         .modal { display: none; }
         .modal.active { display: flex; animation: floatUp 0.3s ease-out; }
@@ -46,18 +42,101 @@
         .view-section.active { display: block; }
         .avatar-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background-color: #eee; }
 
-        /* Cloud Loading Screen */
-        #cloud-loader {
-            position: fixed; inset: 0; background: #1A3A5C; z-index: 9999; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;
+        .hero-section {
+            background: linear-gradient(175deg, #0B1D33 0%, #0F2847 35%, #142f54 65%, #1A3A5C 100%);
+            position: relative; overflow: hidden;
         }
+        .hero-section::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: 
+                radial-gradient(circle at 15% 25%, rgba(201,168,76,0.07) 0%, transparent 50%),
+                radial-gradient(circle at 85% 60%, rgba(30,90,168,0.1) 0%, transparent 45%);
+            pointer-events: none;
+        }
+        .hero-section::after {
+            content: ''; position: absolute; inset: 0;
+            background-image:
+                radial-gradient(1.5px 1.5px at 10% 20%, rgba(201,168,76,0.4) 50%, transparent 50%),
+                radial-gradient(2px 2px at 25% 70%, rgba(255,255,255,0.15) 50%, transparent 50%),
+                radial-gradient(1px 1px at 40% 15%, rgba(201,168,76,0.3) 50%, transparent 50%),
+                radial-gradient(2.5px 2.5px at 55% 80%, rgba(255,255,255,0.1) 50%, transparent 50%),
+                radial-gradient(1.5px 1.5px at 70% 30%, rgba(201,168,76,0.25) 50%, transparent 50%),
+                radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,0.15) 50%, transparent 50%);
+            pointer-events: none; animation: twinkle 6s ease-in-out infinite alternate;
+        }
+        @keyframes twinkle { 0%{ opacity:0.6; } 100%{ opacity:1; } }
+        .hero-hex-grid {
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='70' viewBox='0 0 80 70' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0l34.64 20v40L40 80 5.36 60V20z' fill='none' stroke='rgba(201,168,76,0.04)' stroke-width='1'/%3E%3C/svg%3E");
+            background-size: 80px 70px; pointer-events: none;
+        }
+        .hero-image-wrapper {
+            position: relative; max-width: 720px; margin: 0 auto;
+            border-radius: 1.25rem; overflow: hidden;
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.2);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+        .hero-image-wrapper:hover { transform: scale(1.015); box-shadow: 0 25px 60px -10px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.35); }
+        .hero-image-wrapper img { width: 100%; height: auto; display: block; }
+        .hero-bottom-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to bottom, transparent, #E8F1FA); pointer-events: none; z-index: 2; }
+        .gold-underline { position: relative; display: inline-block; }
+        .gold-underline::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: linear-gradient(90deg, transparent, #C9A84C, transparent); border-radius: 2px; }
+        .cta-glow { position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(201,168,76,0.4), 0 0 0 1px rgba(201,168,76,0.3); transition: all 0.3s ease; }
+        .cta-glow:hover { box-shadow: 0 6px 30px rgba(201,168,76,0.55), 0 0 0 1px rgba(201,168,76,0.5); transform: translateY(-2px); }
+        .cta-glow::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%); animation: ctaShine 3s ease-in-out infinite; }
+        @keyframes ctaShine { 0%{ transform: translateX(-100%) rotate(45deg); } 100%{ transform: translateX(100%) rotate(45deg); } }
+
+        .mid-lightblue-section { background: linear-gradient(180deg, #E8F1FA 0%, #DCE9F7 50%, #D0E0F3 100%); position: relative; }
+        .mid-lightblue-section::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='rgba(30,90,168,0.05)'/%3E%3C/svg%3E"); background-size: 40px 40px; pointer-events: none; }
+
+        .course-card { background: #ffffff; border-radius: 1rem; overflow: hidden; position: relative; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 4px 15px rgba(26, 58, 92, 0.08), 0 1px 3px rgba(26, 58, 92, 0.06); border: 1px solid rgba(30, 90, 168, 0.08); }
+        .course-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px rgba(26, 58, 92, 0.18), 0 8px 20px -6px rgba(201, 168, 76, 0.12); border-color: rgba(201, 168, 76, 0.3); }
+        .course-card-accent { height: 4px; background: linear-gradient(90deg, #C9A84C 0%, #1E5AA8 50%, #10B981 100%); transition: height 0.3s ease; }
+        .course-card:hover .course-card-accent { height: 5px; }
+        .course-icon-wrap { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: all 0.4s ease; }
+        .course-card:hover .course-icon-wrap { transform: scale(1.1) rotate(-3deg); }
+        .course-card:nth-child(6n+1) .course-icon-wrap { background: linear-gradient(135deg, #EBF5FF, #D6E8FF); color: #1E5AA8; }
+        .course-card:nth-child(6n+2) .course-icon-wrap { background: linear-gradient(135deg, #FFF8E7, #FFEFBF); color: #B8941F; }
+        .course-card:nth-child(6n+3) .course-icon-wrap { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: #059669; }
+        .course-card:nth-child(6n+4) .course-icon-wrap { background: linear-gradient(135deg, #FFF1F2, #FECDD3); color: #DC2626; }
+        .course-card:nth-child(6n+5) .course-icon-wrap { background: linear-gradient(135deg, #F5F3FF, #EDE9FE); color: #7C3AED; }
+        .course-card:nth-child(6n+6) .course-icon-wrap { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); color: #D97706; }
+        .course-num-badge { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 8px; background: rgba(26, 58, 92, 0.06); color: rgba(26, 58, 92, 0.3); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .course-card:hover .course-num-badge { background: linear-gradient(135deg, #C9A84C, #D4B65A); color: #0B1D33; }
+        .course-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; color: #1A3A5C; line-height: 1.3; margin-bottom: 0.25rem; }
+        .course-urdu { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; color: #8B9DBF; font-size: 0.85rem; line-height: 1.8; margin-bottom: 0.75rem; }
+        .course-desc { font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 400; color: #5A6B82; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .course-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(30,90,168,0.12), transparent); margin: 1rem 0; }
+        .course-tag { display: inline-flex; align-items: center; gap: 0.35rem; font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.3rem 0.7rem; border-radius: 6px; }
+        .course-card:nth-child(6n+1) .course-tag { background: #EBF5FF; color: #1E5AA8; }
+        .course-card:nth-child(6n+2) .course-tag { background: #FFF8E7; color: #B8941F; }
+        .course-card:nth-child(6n+3) .course-tag { background: #ECFDF5; color: #059669; }
+        .course-card:nth-child(6n+4) .course-tag { background: #FFF1F2; color: #DC2626; }
+        .course-card:nth-child(6n+5) .course-tag { background: #F5F3FF; color: #7C3AED; }
+        .course-card:nth-child(6n+6) .course-tag { background: #FFFBEB; color: #D97706; }
+
+        .footer-top-fade { position: relative; }
+        .footer-top-fade::before { content: ''; position: absolute; top: -60px; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, #112233); pointer-events: none; }
+
+        #cloud-loader { position: fixed; inset: 0; background: #1A3A5C; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .spinner { border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid #C9A84C; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 1rem; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hero-preview-img { max-width: 100%; max-height: 300px; border-radius: 0.75rem; border: 2px solid #e5e7eb; object-fit: contain; background: #f9fafb; }
+        .admin-tab-active { background-color: #C9A84C !important; color: #1A3A5C !important; border-bottom: 4px solid #1A3A5C; }
+
+        .header-on-dark { background: rgba(11, 29, 51, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,168,76,0.1); }
+        .header-on-dark .heading { color: #ffffff !important; }
+        .header-on-dark span { color: #C9A84C !important; }
+        .header-on-dark nav a { color: rgba(255,255,255,0.75) !important; }
+        .header-on-dark nav a:hover { color: #ffffff !important; }
+        .header-atom { border-color: #C9A84C !important; color: #C9A84C !important; }
+
+        /* Reset confirm modal danger style */
+        .reset-danger-border { border: 2px solid #EF4444; }
     </style>
 </head>
-<body class="bg-pattern text-navy overflow-x-hidden">
+<body class="text-navy overflow-x-hidden">
 
-    <!-- Loading Screen -->
     <div id="cloud-loader">
         <div class="spinner"></div>
         <h2 class="heading text-2xl font-bold">Connecting to Cloud Database...</h2>
@@ -67,105 +146,89 @@
         
         <!-- ==================== LANDING PAGE ==================== -->
         <div id="view-landing" class="view-section active">
-            <header class="fixed w-full top-0 z-50 py-4 bg-cream/90 backdrop-blur-sm shadow-sm relative">
+
+            <header id="main-header" class="fixed w-full top-0 z-50 py-4 header-on-dark transition-all duration-500">
                 <div class="container mx-auto px-4 flex justify-between items-center">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full border-2 border-gold flex items-center justify-center bg-white text-gold text-2xl"><i class="fas fa-atom"></i></div>
+                        <div class="w-12 h-12 rounded-full border-2 header-atom flex items-center justify-center bg-transparent text-2xl"><i class="fas fa-atom"></i></div>
                         <div>
-                            <h1 class="heading text-xl font-bold text-blue leading-tight">Chem Buddy</h1>
-                            <span class="text-xs text-gold font-semibold uppercase tracking-wider">Online Academy</span>
+                            <h1 class="heading text-xl font-bold leading-tight">Chem Buddy</h1>
+                            <span class="text-xs font-semibold uppercase tracking-wider">Online Academy</span>
                         </div>
                     </div>
-                    
                     <nav class="hidden md:flex items-center gap-4 font-semibold">
-                        <a href="#courses" class="hover:text-blue transition">Courses</a>
-                        <button type="button" onclick="openModal('modal-free-trial')" class="text-gold hover:text-navy transition border-b-2 border-gold">Free Trial</button>
-                        <div class="flex items-center gap-2 ml-2 border-l border-gold/30 pl-4">
+                        <a href="#courses" class="hover:text-gold transition">Courses</a>
+                        <button type="button" onclick="openModal('modal-free-trial')" class="text-gold hover:text-white transition border-b-2 border-gold">Free Trial</button>
+                        <div class="flex items-center gap-2 ml-2 border-l border-white/20 pl-4">
                             <button type="button" onclick="openModal('modal-teacher-login')" class="px-3 py-1 border-2 border-emerald text-emerald rounded hover:bg-emerald hover:text-white transition">Teacher</button>
-                            <button type="button" onclick="openModal('modal-student-login')" class="px-3 py-1 border-2 border-blue text-blue rounded hover:bg-blue hover:text-white transition">Student</button>
+                            <button type="button" onclick="openModal('modal-student-login')" class="px-3 py-1 border-2 border-blue-400 text-blue-300 rounded hover:bg-blue-500 hover:text-white transition">Student</button>
                         </div>
                     </nav>
-
-                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden text-2xl text-navy focus:outline-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden text-2xl text-white focus:outline-none"><i class="fas fa-bars"></i></button>
                 </div>
-
-                <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-200 flex flex-col p-4 gap-3 z-50">
-                    <a href="#courses" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-navy font-bold text-center pb-2 border-b">Courses</a>
-                    <button type="button" onclick="openModal('modal-free-trial'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-gold font-bold text-center pb-2 border-b">Book Free Trial</button>
+                <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-darkbg/95 backdrop-blur-md shadow-lg border-t border-gold/20 flex flex-col p-4 gap-3 z-50">
+                    <a href="#courses" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-white font-bold text-center pb-2 border-b border-white/10">Courses</a>
+                    <button type="button" onclick="openModal('modal-free-trial'); document.getElementById('mobile-menu').classList.add('hidden')" class="text-gold font-bold text-center pb-2 border-b border-white/10">Book Free Trial</button>
                     <button type="button" onclick="openModal('modal-teacher-login'); document.getElementById('mobile-menu').classList.add('hidden')" class="bg-emerald text-white py-3 rounded font-bold shadow">Teacher Login</button>
                     <button type="button" onclick="openModal('modal-student-login'); document.getElementById('mobile-menu').classList.add('hidden')" class="bg-blue text-white py-3 rounded font-bold shadow">Student Login</button>
                 </div>
             </header>
 
-            <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden text-center">
-                <div class="container mx-auto px-4 relative z-10 float-up">
-                    <h1 class="heading text-5xl md:text-7xl font-bold text-navy mb-6">Welcome to Chem Buddy</h1>
-                    <p class="text-lg md:text-xl max-w-2xl mx-auto mb-10 text-gray-700">Master the elements of chemistry with expert tutors.</p>
-                    <div class="flex justify-center gap-4">
-                        <button type="button" onclick="openModal('modal-free-trial')" class="bg-gold text-navy font-bold px-8 py-3 rounded shadow hover:bg-yellow-500 transition">Book Free Trial</button>
+            <section class="hero-section relative pt-32 pb-16 lg:pt-44 lg:pb-24 text-center">
+                <div class="hero-hex-grid"></div>
+                <div class="container mx-auto px-4 relative z-10">
+                    <div class="float-up mb-8">
+                        <h1 class="heading text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 gold-underline">Welcome to Chem Buddy</h1>
+                        <p class="text-lg md:text-xl max-w-2xl mx-auto mb-10 text-gray-300 leading-relaxed">Master the elements of chemistry with expert tutors.</p>
+                        <div class="flex justify-center gap-4">
+                            <button type="button" onclick="openModal('modal-free-trial')" class="cta-glow bg-gold text-darkbg font-bold px-10 py-4 rounded-lg text-lg transition"><i class="fas fa-flask mr-2"></i>Book Free Trial</button>
+                        </div>
+                    </div>
+                    <div class="float-up-delay">
+                        <div class="hero-image-wrapper hero-img-float">
+                            <img id="hero-landing-img" src="https://z-cdn-media.chatglm.cn/files/c95657c5-df22-4382-9b03-c384d0819398.png?auth_key=1882991181-b4948619741c4ced9fa50eefeb6e7bae-0-857efe93fbe66629a38bd7e4549f0e7c" alt="Chem Buddy">
+                        </div>
                     </div>
                 </div>
+                <div class="hero-bottom-fade"></div>
             </section>
 
-            <section id="courses" class="py-20 bg-white">
-                <div class="container mx-auto px-4">
+            <section id="courses" class="mid-lightblue-section py-20 relative">
+                <div class="container mx-auto px-4 relative z-10">
                     <div class="text-center mb-16">
-                        <h2 class="heading text-4xl font-bold mb-4 text-navy">Explore Chemistry Topics</h2>
-                        <div class="w-16 h-1 bg-gold mx-auto rounded"></div>
+                        <p class="text-blue font-semibold text-sm uppercase tracking-widest mb-3">What We Offer</p>
+                        <h2 class="heading text-4xl md:text-5xl font-bold mb-4 text-navy">Explore Chemistry Topics</h2>
+                        <div class="w-20 h-1 bg-gold mx-auto rounded mb-4"></div>
+                        <p class="text-blue/60 max-w-lg mx-auto text-base">Choose from our expertly designed courses covering every branch of chemistry.</p>
                     </div>
-                    <div id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                    <div id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"></div>
                 </div>
             </section>
 
-            <footer class="bg-[#112233] text-gray-300 py-12">
-    <div class="container mx-auto px-4">
-        
-        <!-- Top Row: Brand + Contact -->
-        <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8 pb-8 border-b border-gray-700">
-            
-            <!-- Brand -->
-            <div class="text-center md:text-left">
-                <div class="flex items-center gap-3 justify-center md:justify-start mb-2">
-                    <div class="w-10 h-10 rounded-full border-2 border-gold flex items-center justify-center bg-transparent text-gold text-xl"><i class="fas fa-atom"></i></div>
-                    <h3 class="heading text-xl font-bold text-white">Chem Buddy</h3>
+            <footer class="bg-[#112233] text-gray-300 py-12 footer-top-fade">
+                <div class="container mx-auto px-4 relative z-10">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8 pb-8 border-b border-gray-700">
+                        <div class="text-center md:text-left">
+                            <div class="flex items-center gap-3 justify-center md:justify-start mb-2">
+                                <div class="w-10 h-10 rounded-full border-2 border-gold flex items-center justify-center bg-transparent text-gold text-xl"><i class="fas fa-atom"></i></div>
+                                <h3 class="heading text-xl font-bold text-white">Chem Buddy</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Master the elements of chemistry with expert tutors.</p>
+                        </div>
+                        <div class="text-center md:text-right">
+                            <h4 class="text-gold font-bold text-lg mb-4 uppercase tracking-wider">Contact Us</h4>
+                            <div class="flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-end">
+                                <a href="https://wa.me/923034171659" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105 group"><i class="fab fa-whatsapp text-2xl group-hover:animate-bounce"></i><span>+92 303 4171659</span></a>
+                                <a href="mailto:aamirnaeem07@gmail.com" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105"><i class="fas fa-envelope text-lg"></i><span class="hidden sm:inline">aamirnaeem07@gmail.com</span><span class="sm:hidden">Email</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p class="text-gray-500 text-sm">Chem Buddy Academy &copy; 2024. All Rights Reserved.</p>
+                        <button type="button" onclick="openModal('modal-admin-login')" class="font-semibold text-gray-600 hover:text-gold transition flex items-center gap-2 text-sm"><i class="fas fa-lock"></i> Admin Access</button>
+                    </div>
                 </div>
-                <p class="text-gray-400 text-sm">Master the elements of chemistry with expert tutors.</p>
-            </div>
-
-            <!-- Contact Us Section -->
-            <div class="text-center md:text-right">
-                <h4 class="text-gold font-bold text-lg mb-4 uppercase tracking-wider">Contact Us</h4>
-                <div class="flex items-center gap-4 justify-center md:justify-end">
-                    
-                    <!-- WhatsApp Button (Number Hidden) -->
-                    <a href="https://wa.me/923034171659" target="_blank" rel="noopener noreferrer" 
-                       class="flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105 group">
-                        <i class="fab fa-whatsapp text-2xl group-hover:animate-bounce"></i>
-                        <span>WhatsApp Chat</span>
-                    </a>
-
-                    <!-- Email (Optional) -->
-                    <a href="aamirnaeem07@gmail.com" 
-                       class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105">
-                        <i class="fas fa-envelope text-lg"></i>
-                        <span>Email</span>
-                    </a>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Row: Copyright + Admin -->
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-gray-500 text-sm">Chem Buddy Academy &copy; 2024. All Rights Reserved.</p>
-            <button type="button" onclick="openModal('modal-admin-login')" class="font-semibold text-gray-600 hover:text-gold transition flex items-center gap-2 text-sm">
-                <i class="fas fa-lock"></i> Admin Access
-            </button>
-        </div>
-    </div>
-</footer>
+            </footer>
         </div>
 
         <!-- ==================== ADMIN DASHBOARD ==================== -->
@@ -181,63 +244,32 @@
                 </div>
             </header>
             <div class="container mx-auto p-4 md:p-8">
-                
                 <div class="flex gap-2 md:gap-4 mb-6 flex-wrap">
-                    <button type="button" onclick="switchAdminTab('tab-admin-teachers')" class="px-4 py-2 bg-white font-bold rounded shadow text-navy hover:bg-gray-50">Teachers</button>
-                    <button type="button" onclick="switchAdminTab('tab-admin-students')" class="px-4 py-2 bg-white font-bold rounded shadow text-navy hover:bg-gray-50">Students</button>
-                    <button type="button" onclick="switchAdminTab('tab-admin-courses')" class="px-4 py-2 bg-white font-bold rounded shadow text-gold border-b-4 border-gold hover:bg-gray-50">Manage Courses</button>
-                    <button type="button" onclick="switchAdminTab('tab-admin-trials')" class="px-4 py-2 bg-white font-bold rounded shadow text-purple-600 hover:bg-gray-50">Trial Requests</button>
+                    <button type="button" onclick="switchAdminTab('tab-admin-teachers', this)" class="admin-tab-btn px-4 py-2 bg-white font-bold rounded shadow text-navy hover:bg-gray-50 transition">Teachers</button>
+                    <button type="button" onclick="switchAdminTab('tab-admin-students', this)" class="admin-tab-btn px-4 py-2 bg-white font-bold rounded shadow text-navy hover:bg-gray-50 transition">Students</button>
+                    <button type="button" onclick="switchAdminTab('tab-admin-courses', this)" class="admin-tab-btn px-4 py-2 bg-white font-bold rounded shadow text-gold border-b-4 border-gold hover:bg-gray-50 transition admin-tab-active">Manage Courses</button>
+                    <button type="button" onclick="switchAdminTab('tab-admin-trials', this)" class="admin-tab-btn px-4 py-2 bg-white font-bold rounded shadow text-purple-600 hover:bg-gray-50 transition">Trial Requests</button>
+                    <button type="button" onclick="switchAdminTab('tab-admin-hero', this)" class="admin-tab-btn px-4 py-2 bg-white font-bold rounded shadow text-orange-600 hover:bg-gray-50 transition"><i class="fas fa-image mr-1"></i> Hero Image</button>
                 </div>
-
-                <div id="tab-admin-teachers" class="admin-tab bg-white rounded shadow p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-navy">Manage Teachers</h2>
-                        <button type="button" onclick="openModal('modal-add-teacher')" class="px-4 py-2 bg-emerald text-white rounded font-bold text-sm">+ Add Teacher</button>
+                <div id="tab-admin-teachers" class="admin-tab bg-white rounded shadow p-6 hidden"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-navy">Manage Teachers</h2><button type="button" onclick="openModal('modal-add-teacher')" class="px-4 py-2 bg-emerald text-white rounded font-bold text-sm">+ Add Teacher</button></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="bg-gray-100"><th class="p-3">Pic</th><th class="p-3">Name</th><th class="p-3">Course</th><th class="p-3">Password</th><th class="p-3">Actions</th></tr></thead><tbody id="table-admin-teachers"></tbody></table></div></div>
+                <div id="tab-admin-students" class="admin-tab bg-white rounded shadow p-6 hidden"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-navy">Manage Students</h2><button type="button" onclick="openModal('modal-add-student')" class="px-4 py-2 bg-blue text-white rounded font-bold text-sm">+ Add Student</button></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="bg-gray-100"><th class="p-3">Pic</th><th class="p-3">Name</th><th class="p-3">Course</th><th class="p-3">Password</th><th class="p-3">Actions</th></tr></thead><tbody id="table-admin-students"></tbody></table></div></div>
+                <div id="tab-admin-courses" class="admin-tab bg-white rounded shadow p-6"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-navy">Manage Courses</h2><button type="button" onclick="openModal('modal-add-course')" class="px-4 py-2 bg-gold text-navy rounded font-bold text-sm">+ Add Course</button></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="bg-gray-100"><th class="p-3">Course Name</th><th class="p-3">Urdu Name</th><th class="p-3">Description</th><th class="p-3">Actions</th></tr></thead><tbody id="table-admin-courses"></tbody></table></div></div>
+                <div id="tab-admin-trials" class="admin-tab bg-white rounded shadow p-6 hidden"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold text-purple-700">Free Trial Requests</h2></div><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="bg-gray-100"><th class="p-3">Date</th><th class="p-3">Student Name</th><th class="p-3">Phone</th><th class="p-3">Course</th><th class="p-3">Actions</th></tr></thead><tbody id="table-admin-trials"></tbody></table></div></div>
+                <div id="tab-admin-hero" class="admin-tab bg-white rounded shadow p-6 hidden">
+                    <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center text-xl"><i class="fas fa-image"></i></div><div><h2 class="text-xl font-bold text-navy">Hero Image Management</h2><p class="text-sm text-gray-500">Yeh image landing page ke hero section me dikhti hai</p></div></div>
+                    <div class="mb-6 p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300"><h3 class="font-bold text-gray-600 text-sm uppercase tracking-wider mb-3"><i class="fas fa-eye mr-1"></i> Current Image Preview</h3><div class="flex justify-center"><img id="admin-hero-preview" src="" alt="Hero Preview" class="hero-preview-img"></div></div>
+                    <div class="p-5 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-xl border border-orange-200">
+                        <h3 class="font-bold text-navy mb-3"><i class="fas fa-upload mr-1 text-orange-500"></i> Upload New Image From Device</h3>
+                        <p class="text-sm text-gray-500 mb-4">Sirf JPG, PNG ya WebP. Max 2MB.</p>
+                        <div class="flex flex-col sm:flex-row gap-3 items-end">
+                            <div class="flex-1 w-full"><label class="block text-sm font-bold text-gray-700 mb-1">Choose Image</label><input type="file" id="hero-img-input" accept="image/jpeg,image/png,image/webp" class="w-full p-2 border-2 border-gray-300 rounded-lg bg-white text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-orange-100 file:text-orange-700 file:font-bold file:cursor-pointer hover:file:bg-orange-200 transition"></div>
+                            <button type="button" onclick="uploadHeroImage()" id="btn-hero-upload" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white px-6 py-2.5 rounded-lg font-bold shadow transition flex items-center justify-center gap-2"><i class="fas fa-cloud-upload-alt"></i> Upload & Save</button>
+                        </div>
+                        <div id="hero-upload-progress" class="hidden mt-4"><div class="flex items-center gap-3 text-sm text-gray-600"><div class="spinner" style="width:20px;height:20px;border-width:3px;"></div><span>Processing...</span></div></div>
+                        <div id="hero-upload-success" class="hidden mt-4 p-3 bg-green-100 text-green-700 rounded-lg font-semibold text-sm"><i class="fas fa-check-circle mr-1"></i> Image updated!</div>
+                        <div id="hero-upload-error" class="hidden mt-4 p-3 bg-red-100 text-red-700 rounded-lg font-semibold text-sm"><i class="fas fa-exclamation-circle mr-1"></i> <span id="hero-error-text"></span></div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead><tr class="bg-gray-100"><th class="p-3">Pic</th><th class="p-3">Name</th><th class="p-3">Course</th><th class="p-3">Password</th><th class="p-3">Actions</th></tr></thead>
-                            <tbody id="table-admin-teachers"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="tab-admin-students" class="admin-tab bg-white rounded shadow p-6 hidden">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-navy">Manage Students</h2>
-                        <button type="button" onclick="openModal('modal-add-student')" class="px-4 py-2 bg-blue text-white rounded font-bold text-sm">+ Add Student</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead><tr class="bg-gray-100"><th class="p-3">Pic</th><th class="p-3">Name</th><th class="p-3">Course</th><th class="p-3">Password</th><th class="p-3">Actions</th></tr></thead>
-                            <tbody id="table-admin-students"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="tab-admin-courses" class="admin-tab bg-white rounded shadow p-6 hidden">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-navy">Manage Courses</h2>
-                        <button type="button" onclick="openModal('modal-add-course')" class="px-4 py-2 bg-gold text-navy rounded font-bold text-sm">+ Add Course</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead><tr class="bg-gray-100"><th class="p-3">Course Name</th><th class="p-3">Urdu Name</th><th class="p-3">Description</th><th class="p-3">Actions</th></tr></thead>
-                            <tbody id="table-admin-courses"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="tab-admin-trials" class="admin-tab bg-white rounded shadow p-6 hidden">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-purple-700">Free Trial Requests</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead><tr class="bg-gray-100"><th class="p-3">Date</th><th class="p-3">Student Name</th><th class="p-3">Phone</th><th class="p-3">Course</th><th class="p-3">Actions</th></tr></thead>
-                            <tbody id="table-admin-trials"></tbody>
-                        </table>
-                    </div>
+                    <div class="mt-4 text-center"><button type="button" onclick="resetHeroImage()" class="text-sm text-gray-500 hover:text-red-600 transition underline"><i class="fas fa-undo mr-1"></i> Reset to Default</button></div>
                 </div>
             </div>
         </div>
@@ -245,31 +277,16 @@
         <!-- ==================== TEACHER DASHBOARD ==================== -->
         <div id="view-teacher" class="view-section min-h-screen bg-gray-100">
             <header class="bg-emerald text-white p-4 shadow-md flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <img id="t-dash-img" src="" class="avatar-img border-2 border-white" alt="DP">
-                    <h1 class="heading text-xl md:text-2xl font-bold"><span id="teacher-name-display"></span>'s Dashboard</h1>
-                </div>
+                <div class="flex items-center gap-3"><img id="t-dash-img" src="" class="avatar-img border-2 border-white" alt="DP"><h1 class="heading text-xl md:text-2xl font-bold"><span id="teacher-name-display"></span>'s Dashboard</h1></div>
                 <button type="button" onclick="logout()" class="px-4 py-2 bg-navy text-white rounded hover:bg-opacity-80 text-sm font-bold">Logout</button>
             </header>
             <div class="container mx-auto p-4 md:p-8">
                 <div class="bg-white rounded shadow p-6 mb-6 border-l-4 border-emerald">
                     <h2 class="text-xl font-bold mb-4 text-navy border-b pb-2">Send Material & Notices</h2>
-                    <div class="mb-4">
-                        <label class="font-bold text-gray-700">Select Student:</label>
-                        <select id="ts-select" class="w-full p-3 border rounded mt-1 bg-gray-50 outline-none"></select>
-                    </div>
+                    <div class="mb-4"><label class="font-bold text-gray-700">Select Student:</label><select id="ts-select" class="w-full p-3 border rounded mt-1 bg-gray-50 outline-none"></select></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="border p-4 rounded bg-gray-50">
-                            <h3 class="font-bold mb-3 text-emerald"><i class="fas fa-file-upload"></i> Upload PDF or Image (Max 4MB)</h3>
-                            <input type="text" id="ts-pdf-title" placeholder="Document Title" class="w-full p-2 border rounded mb-3">
-                            <input type="file" id="ts-pdf-file" accept=".pdf, image/*" class="w-full p-2 border rounded mb-3 bg-white">
-                            <button type="button" onclick="handlePDFUpload()" id="btn-pdf-upload" class="bg-emerald text-white px-4 py-2 rounded font-bold w-full shadow hover:bg-opacity-90 transition">Upload File</button>
-                        </div>
-                        <div class="border p-4 rounded bg-gray-50">
-                            <h3 class="font-bold mb-3 text-emerald"><i class="fas fa-bell"></i> Write Notice</h3>
-                            <textarea id="ts-notice-text" rows="3" placeholder="Write notice here..." class="w-full p-2 border rounded mb-3"></textarea>
-                            <button type="button" onclick="handlePostNotice()" class="bg-emerald text-white px-4 py-2 rounded font-bold w-full shadow hover:bg-opacity-90 transition">Post Notice</button>
-                        </div>
+                        <div class="border p-4 rounded bg-gray-50"><h3 class="font-bold mb-3 text-emerald"><i class="fas fa-file-upload"></i> Upload PDF/Image (Max 4MB)</h3><input type="text" id="ts-pdf-title" placeholder="Document Title" class="w-full p-2 border rounded mb-3"><input type="file" id="ts-pdf-file" accept=".pdf, image/*" class="w-full p-2 border rounded mb-3 bg-white"><button type="button" onclick="handlePDFUpload()" class="bg-emerald text-white px-4 py-2 rounded font-bold w-full shadow hover:bg-opacity-90 transition">Upload File</button></div>
+                        <div class="border p-4 rounded bg-gray-50"><h3 class="font-bold mb-3 text-emerald"><i class="fas fa-bell"></i> Write Notice</h3><textarea id="ts-notice-text" rows="3" placeholder="Write notice here..." class="w-full p-2 border rounded mb-3"></textarea><button type="button" onclick="handlePostNotice()" class="bg-emerald text-white px-4 py-2 rounded font-bold w-full shadow hover:bg-opacity-90 transition">Post Notice</button></div>
                     </div>
                 </div>
             </div>
@@ -283,60 +300,22 @@
             </header>
             <div class="container mx-auto p-4 md:p-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    <!-- Left: Profile -->
                     <div class="bg-white rounded shadow p-6 col-span-1 border-t-4 border-blue text-center h-fit">
                         <img id="s-dash-img" src="" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-200 object-cover" alt="Profile">
                         <h2 class="text-xl font-bold mb-2 text-navy" id="s-dash-name"></h2>
                         <p class="text-sm mb-2">Course: <span id="st-dash-course" class="font-bold text-blue"></span></p>
                     </div>
-
-                    <!-- Right: Content -->
                     <div class="col-span-1 md:col-span-2 space-y-6">
-                        
-                        <!-- Notices -->
-                        <div class="bg-white rounded shadow p-6">
-                            <h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-bullhorn text-gold"></i> Notices</h2>
-                            <ul id="st-notices-list" class="space-y-3"></ul>
-                        </div>
-
-                        <!-- Study Materials -->
-                        <div class="bg-white rounded shadow p-6">
-                            <h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-download text-emerald"></i> Study Materials</h2>
-                            <ul id="st-downloads-list" class="space-y-3"></ul>
-                        </div>
-
-                        <!-- ========== NEW: ASK ANY QUESTION SECTION ========== -->
+                        <div class="bg-white rounded shadow p-6"><h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-bullhorn text-gold"></i> Notices</h2><ul id="st-notices-list" class="space-y-3"></ul></div>
+                        <div class="bg-white rounded shadow p-6"><h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-download text-emerald"></i> Study Materials</h2><ul id="st-downloads-list" class="space-y-3"></ul></div>
                         <div class="bg-white rounded shadow p-6 border-t-4 border-gold">
                             <h2 class="text-xl font-bold mb-4 border-b pb-2"><i class="fas fa-question-circle text-gold"></i> Any Question Ask</h2>
-                            
-                            <!-- Current Question Box -->
                             <div id="active-question-box" class="mb-6 p-5 bg-gradient-to-br from-blue-50 to-cream rounded-xl border border-blue-200 shadow-inner">
-                                <div class="flex items-start gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-blue text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">Q</div>
-                                    <div class="flex-1">
-                                        <p id="active-question-text" class="text-navy font-semibold text-lg leading-relaxed"></p>
-                                        <p class="text-xs text-gray-400 mt-2" id="active-question-date"></p>
-                                    </div>
-                                </div>
-                                <div class="mt-4 ml-13">
-                                    <textarea id="student-answer-input" rows="3" placeholder="Apna jawab yahan likhein..." class="w-full p-3 border-2 border-blue/30 rounded-lg focus:border-blue focus:outline-none transition text-navy font-medium"></textarea>
-                                    <button type="button" onclick="submitAnswer()" class="mt-3 bg-blue text-white px-6 py-2 rounded-lg font-bold shadow hover:bg-blue/90 transition flex items-center gap-2">
-                                        <i class="fas fa-paper-plane"></i> Submit Answer
-                                    </button>
-                                </div>
+                                <div class="flex items-start gap-3"><div class="w-10 h-10 rounded-full bg-blue text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">Q</div><div class="flex-1"><p id="active-question-text" class="text-navy font-semibold text-lg leading-relaxed"></p><p class="text-xs text-gray-400 mt-2" id="active-question-date"></p></div></div>
+                                <div class="mt-4 ml-13"><textarea id="student-answer-input" rows="3" placeholder="Apna jawab yahan likhein..." class="w-full p-3 border-2 border-blue/30 rounded-lg focus:border-blue focus:outline-none transition text-navy font-medium"></textarea><button type="button" onclick="submitAnswer()" class="mt-3 bg-blue text-white px-6 py-2 rounded-lg font-bold shadow hover:bg-blue/90 transition flex items-center gap-2"><i class="fas fa-paper-plane"></i> Submit Answer</button></div>
                             </div>
-
-                            <!-- Recent Answered Questions -->
-                            <div>
-                                <h3 class="font-bold text-gray-600 text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
-                                    <i class="fas fa-clock text-gold"></i> Recent
-                                </h3>
-                                <ul id="recent-questions-list" class="space-y-3 max-h-80 overflow-y-auto pr-1"></ul>
-                                <p id="no-recent-msg" class="text-gray-400 text-sm text-center py-4 hidden">Abhi tak koi recent sawal nahi.</p>
-                            </div>
+                            <div><h3 class="font-bold text-gray-600 text-sm uppercase tracking-wider mb-3 flex items-center gap-2"><i class="fas fa-clock text-gold"></i> Recent</h3><ul id="recent-questions-list" class="space-y-3 max-h-80 overflow-y-auto pr-1"></ul><p id="no-recent-msg" class="text-gray-400 text-sm text-center py-4 hidden">Abhi tak koi recent sawal nahi.</p></div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -344,410 +323,199 @@
 
         <!-- ==================== MODALS ==================== -->
         <div id="modal-free-trial" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-gold p-4 text-navy font-bold text-lg"><i class="fas fa-flask"></i> Book a Free Trial</div><div class="p-6 space-y-4"><input type="text" id="trial-name" placeholder="Your Name" class="w-full p-2 border rounded bg-gray-50"><input type="text" id="trial-phone" placeholder="Phone Number" class="w-full p-2 border rounded bg-gray-50"><select id="trial-course" class="w-full p-2 border rounded bg-gray-50"></select><div class="flex gap-2 pt-2"><button type="button" onclick="submitTrial()" class="flex-1 bg-gold text-navy py-2 rounded font-bold shadow hover:bg-yellow-500">Submit Request</button><button type="button" onclick="closeModal('modal-free-trial')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
-        
-        <div id="modal-admin-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-navy p-4 text-white text-center font-bold">Admin Login</div><div class="p-6"><input type="text" id="log-admin-user" placeholder="Enter Username" class="w-full mb-4 p-3 border rounded"><input type="password" id="log-admin-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('admin')" class="w-full py-3 bg-navy text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-admin-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
-        <div id="modal-teacher-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-emerald p-4 text-white text-center font-bold">Teacher Login</div><div class="p-6"><input type="password" id="log-teacher-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('teacher')" class="w-full py-3 bg-emerald text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-teacher-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
-        <div id="modal-student-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-blue p-4 text-white text-center font-bold">Student Login</div><div class="p-6"><input type="password" id="log-student-pass" placeholder="Enter Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('student')" class="w-full py-3 bg-blue text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-student-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
+        <div id="modal-admin-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-navy p-4 text-white text-center font-bold">Admin Login</div><div class="p-6"><input type="text" id="log-admin-user" placeholder="Username" class="w-full mb-4 p-3 border rounded"><input type="password" id="log-admin-pass" placeholder="Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('admin')" class="w-full py-3 bg-navy text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-admin-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
+        <div id="modal-teacher-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-emerald p-4 text-white text-center font-bold">Teacher Login</div><div class="p-6"><input type="password" id="log-teacher-pass" placeholder="Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('teacher')" class="w-full py-3 bg-emerald text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-teacher-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
+        <div id="modal-student-login" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded w-full max-w-sm"><div class="bg-blue p-4 text-white text-center font-bold">Student Login</div><div class="p-6"><input type="password" id="log-student-pass" placeholder="Password" class="w-full mb-6 p-3 border rounded"><button type="button" onclick="handleLogin('student')" class="w-full py-3 bg-blue text-white font-bold rounded">Login</button><button type="button" onclick="closeModal('modal-student-login')" class="w-full mt-2 py-2 text-gray-500">Cancel</button></div></div></div>
+        <div id="modal-add-teacher" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-emerald p-4 text-white font-bold">Add Teacher</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-t-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-t-name" placeholder="Teacher Name" class="w-full p-2 border rounded"><select id="add-t-course" class="w-full p-2 border rounded"></select><input type="text" id="add-t-pass" placeholder="Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveTeacher()" class="flex-1 bg-emerald text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-teacher')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
+        <div id="modal-add-student" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-blue p-4 text-white font-bold">Add Student</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-s-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-s-name" placeholder="Student Name" class="w-full p-2 border rounded"><select id="add-s-course" class="w-full p-2 border rounded"></select><select id="add-s-teacher" class="w-full p-2 border rounded"></select><input type="text" id="add-s-pass" placeholder="Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveStudent()" class="flex-1 bg-blue text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-student')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
+        <div id="modal-add-course" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-gold p-4 text-navy font-bold">Add New Course</div><div class="p-6 space-y-4"><input type="text" id="add-c-name" placeholder="Course Name" class="w-full p-2 border rounded"><input type="text" id="add-c-urdu" placeholder="Urdu Name" class="w-full p-2 border rounded urdu"><textarea id="add-c-desc" placeholder="Short Description..." class="w-full p-2 border rounded" rows="2"></textarea><div class="flex gap-2 pt-2"><button type="button" onclick="saveCourse()" class="flex-1 bg-gold text-navy py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-course')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
+        <div id="modal-upd-teacher" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-emerald p-4 text-white font-bold"><i class="fas fa-edit"></i> Edit Teacher</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">New Image (Optional)</label><input type="file" id="upd-t-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="upd-t-name" placeholder="Update Name" class="w-full p-2 border rounded"><input type="text" id="upd-t-pass" placeholder="Update Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveUpdTeacher()" class="flex-1 bg-emerald text-white py-2 rounded font-bold">Update</button><button type="button" onclick="closeModal('modal-upd-teacher')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
+        <div id="modal-upd-student" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-blue p-4 text-white font-bold"><i class="fas fa-edit"></i> Edit Student</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">New Image (Optional)</label><input type="file" id="upd-s-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="upd-s-name" placeholder="Update Name" class="w-full p-2 border rounded"><input type="text" id="upd-s-pass" placeholder="Update Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveUpdStudent()" class="flex-1 bg-blue text-white py-2 rounded font-bold">Update</button><button type="button" onclick="closeModal('modal-upd-student')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
 
-        <div id="modal-add-teacher" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-emerald p-4 text-white font-bold">Add Teacher</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-t-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-t-name" placeholder="Teacher Name" class="w-full p-2 border rounded"><select id="add-t-course" class="w-full p-2 border rounded"></select><input type="text" id="add-t-pass" placeholder="Enter Manual Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveTeacher()" class="flex-1 bg-emerald text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-teacher')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
-        <div id="modal-add-student" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-blue p-4 text-white font-bold">Add Student</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">Profile Image</label><input type="file" id="add-s-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="add-s-name" placeholder="Student Name" class="w-full p-2 border rounded"><select id="add-s-course" class="w-full p-2 border rounded"></select><select id="add-s-teacher" class="w-full p-2 border rounded"></select><input type="text" id="add-s-pass" placeholder="Enter Manual Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveStudent()" class="flex-1 bg-blue text-white py-2 rounded font-bold">Save</button><button type="button" onclick="closeModal('modal-add-student')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
-        
-        <div id="modal-add-course" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4">
-            <div class="bg-white rounded shadow-2xl w-full max-w-md">
-                <div class="bg-gold p-4 text-navy font-bold">Add New Course</div>
+        <!-- ===== NEW: FACTORY RESET CONFIRMATION MODAL ===== -->
+        <div id="modal-reset-confirm" class="modal fixed inset-0 bg-black/60 z-[200] items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm reset-danger-border">
+                <!-- Red danger header -->
+                <div class="bg-red-600 p-4 text-white text-center rounded-t-xl">
+                    <i class="fas fa-skull-crossbones text-3xl mb-2 block"></i>
+                    <h3 class="heading text-xl font-bold">Danger Zone</h3>
+                </div>
                 <div class="p-6 space-y-4">
-                    <input type="text" id="add-c-name" placeholder="Course Name (e.g. Physical Chemistry)" class="w-full p-2 border rounded">
-                    <input type="text" id="add-c-urdu" placeholder="Urdu Name (e.g. فزیکل کیمسٹری)" class="w-full p-2 border rounded urdu">
-                    <textarea id="add-c-desc" placeholder="Short Description..." class="w-full p-2 border rounded" rows="2"></textarea>
-                    <div class="flex gap-2 pt-2">
-                        <button type="button" onclick="saveCourse()" class="flex-1 bg-gold text-navy py-2 rounded font-bold">Save</button>
-                        <button type="button" onclick="closeModal('modal-add-course')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button>
+                    <!-- Warning text -->
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <p class="text-red-800 font-bold text-sm flex items-start gap-2">
+                            <i class="fas fa-exclamation-triangle mt-0.5 flex-shrink-0"></i>
+                            <span>Sab data (Teachers, Students, Courses, Hero Image, Trial Requests) hamesha ke liye delete ho jayega. Yeh action undo nahi ho sakta!</span>
+                        </p>
+                    </div>
+
+                    <!-- Password confirmation -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">
+                            <i class="fas fa-lock text-red-500 mr-1"></i> Admin Password dobara likhein
+                        </label>
+                        <input type="password" id="reset-confirm-pass" placeholder="Enter admin password" 
+                               class="w-full p-3 border-2 border-red-300 rounded-lg bg-red-50/50 text-navy font-bold focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200 transition text-center text-lg tracking-widest"
+                               onkeydown="if(event.key==='Enter') executeFactoryReset()">
+                        <p class="text-xs text-gray-400 mt-1 text-center">Reset karne ke liye password zaruri hai</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="closeModal('modal-reset-confirm')" 
+                                class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-bold transition">
+                            <i class="fas fa-times mr-1"></i> Cancel
+                        </button>
+                        <button type="button" onclick="executeFactoryReset()" 
+                                class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold shadow-lg hover:shadow-red-500/30 transition">
+                            <i class="fas fa-bomb mr-1"></i> Destroy All
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="modal-upd-teacher" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-emerald p-4 text-white font-bold"><i class="fas fa-edit"></i> Admin: Edit Teacher</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">New Profile Image (Optional)</label><input type="file" id="upd-t-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="upd-t-name" placeholder="Update Name" class="w-full p-2 border rounded"><input type="text" id="upd-t-pass" placeholder="Update Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveUpdTeacher()" class="flex-1 bg-emerald text-white py-2 rounded font-bold">Update</button><button type="button" onclick="closeModal('modal-upd-teacher')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
-        <div id="modal-upd-student" class="modal fixed inset-0 bg-black/50 z-[100] items-center justify-center p-4"><div class="bg-white rounded shadow-2xl w-full max-w-md"><div class="bg-blue p-4 text-white font-bold"><i class="fas fa-edit"></i> Admin: Edit Student</div><div class="p-6 space-y-4"><div><label class="text-sm font-bold">New Profile Image (Optional)</label><input type="file" id="upd-s-img" accept="image/*" class="w-full p-2 border rounded text-sm"></div><input type="text" id="upd-s-name" placeholder="Update Name" class="w-full p-2 border rounded"><input type="text" id="upd-s-pass" placeholder="Update Password" class="w-full p-2 border rounded bg-gray-50"><div class="flex gap-2 pt-2"><button type="button" onclick="saveUpdStudent()" class="flex-1 bg-blue text-white py-2 rounded font-bold">Update</button><button type="button" onclick="closeModal('modal-upd-student')" class="flex-1 bg-gray-200 py-2 rounded">Cancel</button></div></div></div></div>
     </div>
 
     <script>
-        /* ==================== FIREBASE CONFIG ==================== */
-        var firebaseConfig = {
-            apiKey: "AIzaSyBsr72VFXwgW3dsJyhjGnisWgtlSA4ynVY",
-            authDomain: "school-c9633.firebaseapp.com",
-            databaseURL: "https://school-c9633-default-rtdb.asia-southeast1.firebasedatabase.app/",
-            projectId: "school-c9633"
-        };
+        var firebaseConfig={apiKey:"AIzaSyBsr72VFXwgW3dsJyhjGnisWgtlSA4ynVY",authDomain:"school-c9633.firebaseapp.com",databaseURL:"https://school-c9633-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"school-c9633"};
+        firebase.initializeApp(firebaseConfig);var database=firebase.database();
+        var curTeacher=null,curStudent=null,editTargetId=null;
+        var placeholderImg="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+        var cloudPDFs=[];
+        var defaultHeroImage="https://z-cdn-media.chatglm.cn/files/c95657c5-df22-4382-9b03-c384d0819398.png?auth_key=1882991181-b4948619741c4ced9fa50eefeb6e7bae-0-857efe93fbe66629a38bd7e4549f0e7c";
+        var courseIcons={'Analytical Chemistry':'fa-microscope','Biochemistry':'fa-dna','Environmental Chemistry':'fa-leaf','Materials Science':'fa-cubes','Forensic Chemistry':'fa-search','Pharmaceutical Chemistry':'fa-pills'};
+        function getCourseIcon(n){return courseIcons[n]||'fa-flask';}
 
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
+        var headerScrolled=false;
+        window.addEventListener('scroll',function(){var h=document.getElementById('main-header');if(!h)return;if(window.scrollY>80&&!headerScrolled){h.classList.remove('header-on-dark');h.classList.add('bg-cream/90','backdrop-blur-sm','shadow-sm');headerScrolled=true;}else if(window.scrollY<=80&&headerScrolled){h.classList.add('header-on-dark');h.classList.remove('bg-cream/90','backdrop-blur-sm','shadow-sm');headerScrolled=false;}});
 
-        var curTeacher = null; var curStudent = null; var editTargetId = null;
-        var placeholderImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="; 
-        var cloudPDFs = []; 
+        function getHeroImage(){return localStorage.getItem('qa_hero_img')||defaultHeroImage;}
+        function setHeroImageToDOM(){var e1=document.getElementById('hero-landing-img');if(e1)e1.src=getHeroImage();var e2=document.getElementById('admin-hero-preview');if(e2)e2.src=getHeroImage();}
+        function uploadHeroImage(){var fi=document.getElementById('hero-img-input');var f=fi.files[0];document.getElementById('hero-upload-success').classList.add('hidden');document.getElementById('hero-upload-error').classList.add('hidden');if(!f){showHeroError("Pehle image select karein!");return;}if(['image/jpeg','image/png','image/webp'].indexOf(f.type)===-1){showHeroError("Sirf JPG/PNG/WebP.");return;}if(f.size>2*1024*1024){showHeroError("2MB se kam.");return;}document.getElementById('hero-upload-progress').classList.remove('hidden');document.getElementById('btn-hero-upload').disabled=true;document.getElementById('btn-hero-upload').innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...';var r=new FileReader();r.onload=function(e){localStorage.setItem('qa_hero_img',e.target.result);database.ref('chem_buddy/qa_hero_img').set(e.target.result).then(function(){setHeroImageToDOM();document.getElementById('hero-upload-progress').classList.add('hidden');document.getElementById('hero-upload-success').classList.remove('hidden');document.getElementById('btn-hero-upload').disabled=false;document.getElementById('btn-hero-upload').innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload & Save';fi.value='';}).catch(function(err){document.getElementById('hero-upload-progress').classList.add('hidden');showHeroError(err.message);document.getElementById('btn-hero-upload').disabled=false;document.getElementById('btn-hero-upload').innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload & Save';});};r.onerror=function(){document.getElementById('hero-upload-progress').classList.add('hidden');showHeroError("File read error.");document.getElementById('btn-hero-upload').disabled=false;document.getElementById('btn-hero-upload').innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload & Save';};r.readAsDataURL(f);}
+        function resetHeroImage(){if(!confirm("Reset to default?"))return;localStorage.removeItem('qa_hero_img');database.ref('chem_buddy/qa_hero_img').remove();setHeroImageToDOM();var s=document.getElementById('hero-upload-success');s.classList.remove('hidden');s.innerHTML='<i class="fas fa-check-circle mr-1"></i> Default restored!';}
+        function showHeroError(msg){document.getElementById('hero-error-text').innerText=msg;document.getElementById('hero-upload-error').classList.remove('hidden');}
 
-        /* ========== CHEMISTRY QUESTIONS BANK ========== */
-        var chemistryQuestions = [
-            "Hydrogen peroxide (H2O2) mein Oxygen ki oxidation state kya hai aur yeh ek reducing agent hai ya oxidizing agent?",
-            "Periodic Table mein Group 17 ke elements ko Halogens kehte hain, unki electronegativity ka trend kya hai top se bottom ki taraf?",
-            "Le Chatelier's Principle ke mutabiq, agar ek exothermic reaction mein temperature barhayen to equilibrium kis taraf shift hoga?",
-            "Sodium (Na) jab paani ke sath react karta hai to Hydrogen gas aur NaOH banta hai — is reaction ka balanced chemical equation kya hai?",
-            "Bond energy aur Bond enthalpy mein kya farq hai? Kya dono ka matlab same hai?",
-            "Alkenes mein Markovnikov's Rule kya kehta hai? Ek example ke sath samjhayein.",
-            "pH scale 0 se 14 tak hoti hai — agar kisi solution ka pH 3 hai to iska [H+] concentration kya hoga?",
-            "Transition metals ke compounds mostly colored kyun hote hain? Iska kya scientific reason hai?",
-            "Grignard Reagent (RMgX) ko kyun banana mushkil hai aur isko banate waqt kya precautions liye jatay hain?",
-            "Arrhenius, Bronsted-Lowry aur Lewis — teenon acid-base theories mein kya farq hai?"
-        ];
+        var chemistryQuestions=["Hydrogen peroxide (H2O2) mein Oxygen ki oxidation state kya hai?","Group 17 Halogens — electronegativity trend?","Le Chatelier's Principle — exothermic mein temp barhayen?","Sodium + paani — balanced equation?","Bond energy vs Bond enthalpy?","Markovnikov's Rule?","pH 3 hai to [H+]?","Transition metals colored kyun?","Grignard Reagent banana mushkil kyun?","Arrhenius vs Bronsted-Lowry vs Lewis?"];
+        var activeQuestionIndex=0,currentActiveQuestion=null;
+        function getNextQuestion(){var s=localStorage.getItem('active_q_'+(curStudent?curStudent.id:'default'));if(s)return JSON.parse(s);var i=activeQuestionIndex%chemistryQuestions.length;var q={id:generateId(),text:chemistryQuestions[i],date:new Date().toLocaleDateString()};activeQuestionIndex++;if(curStudent)localStorage.setItem('active_q_'+curStudent.id,JSON.stringify(q));return q;}
+        function submitAnswer(){var a=document.getElementById('student-answer-input').value.trim();if(!a){alert("Jawab likhein!");return;}if(!currentActiveQuestion)return;var k='recent_q_'+(curStudent?curStudent.id:'default');var r=JSON.parse(localStorage.getItem(k)||'[]');r.unshift({question:currentActiveQuestion.text,answer:a,date:new Date().toLocaleString()});if(r.length>20)r=r.slice(0,20);localStorage.setItem(k,JSON.stringify(r));if(curStudent)localStorage.removeItem('active_q_'+curStudent.id);document.getElementById('student-answer-input').value='';currentActiveQuestion=null;loadQuestionSection();alert("Jawab submit ho gaya!");}
+        function loadQuestionSection(){if(!curStudent)return;currentActiveQuestion=getNextQuestion();document.getElementById('active-question-text').innerText=currentActiveQuestion.text;document.getElementById('active-question-date').innerText=currentActiveQuestion.date;var k='recent_q_'+curStudent.id;var r=JSON.parse(localStorage.getItem(k)||'[]');var l=document.getElementById('recent-questions-list');var n=document.getElementById('no-recent-msg');l.innerHTML='';if(!r.length){n.classList.remove('hidden');}else{n.classList.add('hidden');for(var i=0;i<r.length;i++){var m=r[i];l.innerHTML+='<li class="slide-in p-4 bg-gray-50 rounded-lg border border-gray-200"><div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-gold text-navy flex items-center justify-center flex-shrink-0 text-xs font-bold">Q</div><div class="flex-1"><p class="font-semibold text-navy text-sm">'+m.question+'</p><div class="mt-2 ml-4 pl-3 border-l-2 border-emerald"><p class="text-emerald-700 font-medium text-sm"><i class="fas fa-check-circle mr-1"></i>'+m.answer+'</p></div><p class="text-xs text-gray-400 mt-2"><i class="far fa-clock mr-1"></i>'+m.date+'</p></div></div></li>';}}}
 
-        /* ========== ACTIVE QUESTION TRACKER ========== */
-        var activeQuestionIndex = 0;
-        var currentActiveQuestion = null;
+        function initCloudDB(){document.getElementById('cloud-loader').style.display='flex';var fs=setTimeout(function(){document.getElementById('cloud-loader').style.display='none';document.getElementById('app').style.display='block';setHeroImageToDOM();renderCoursesLanding();checkSession();},4000);database.ref('chem_buddy').once('value').then(function(snap){clearTimeout(fs);var d=snap.val()||{};if(d.qa_c)localStorage.setItem('qa_c',JSON.stringify(d.qa_c));else initDefault('qa_c');if(d.qa_t)localStorage.setItem('qa_t',JSON.stringify(d.qa_t));else initDefault('qa_t');if(d.qa_s)localStorage.setItem('qa_s',JSON.stringify(d.qa_s));else initDefault('qa_s');if(d.qa_n)localStorage.setItem('qa_n',JSON.stringify(d.qa_n));else initDefault('qa_n');if(d.qa_tr)localStorage.setItem('qa_tr',JSON.stringify(d.qa_tr));else initDefault('qa_tr');if(d.qa_p)cloudPDFs=d.qa_p;else cloudPDFs=[];if(d.qa_hero_img)localStorage.setItem('qa_hero_img',d.qa_hero_img);document.getElementById('cloud-loader').style.display='none';document.getElementById('app').style.display='block';setHeroImageToDOM();renderCoursesLanding();checkSession();}).catch(function(){clearTimeout(fs);document.getElementById('cloud-loader').style.display='none';document.getElementById('app').style.display='block';setHeroImageToDOM();renderCoursesLanding();checkSession();});}
+        function initDefault(k){if(k==='qa_c'){localStorage.setItem('qa_c',JSON.stringify([{id:'c1',name:'Analytical Chemistry',nameUrdu:'انالیٹیکل کیمسٹری',fee:'Paid',desc:'Matter ki janch partal (miqdar aur qisam) aur components ki pehchan.'},{id:'c2',name:'Biochemistry',nameUrdu:'بائیو کیمسٹری',fee:'Paid',desc:'Zinda jandaron ke andar hone walay chemical processes ki study.'},{id:'c3',name:'Environmental Chemistry',nameUrdu:'ماحولیاتی کیمسٹری',fee:'Paid',desc:'Hawa, pani aur matti mein pollution aur chemical changes.'},{id:'c4',name:'Materials Science',nameUrdu:'میٹیریل سائنس',fee:'Paid',desc:'Khas khusoosiyat walay naye materials (nanomaterials) banana.'},{id:'c5',name:'Forensic Chemistry',nameUrdu:'فارنزک کیمسٹری',fee:'Paid',desc:'Jurm ki tehqiqat (DNA, toxicology) mein chemical analysis.'},{id:'c6',name:'Pharmaceutical Chemistry',nameUrdu:'فارماسیوٹیکل کیمسٹری',fee:'Paid',desc:'Nayi dawaiyon ki tayari, testing aur behtari.'}]));}else{localStorage.setItem(k,JSON.stringify([]));}}
+        function getDB(k){if(k==='qa_p')return cloudPDFs;var d=localStorage.getItem(k);return d?JSON.parse(d):[];}
+        function setDB(k,d){if(k==='qa_p'){cloudPDFs=d;}else{localStorage.setItem(k,JSON.stringify(d));}database.ref('chem_buddy/'+k).set(d).catch(function(e){console.log(e);});}
+        function generateId(){return Math.random().toString(36).substr(2,9);}
 
-        function getNextQuestion() {
-            /* Check if we already have an active unanswered question in storage */
-            var stored = localStorage.getItem('active_q_' + (curStudent ? curStudent.id : 'default'));
-            if (stored) {
-                return JSON.parse(stored);
+        function openModal(id){
+            document.getElementById(id).classList.add('active');
+            if(id==='modal-free-trial'){document.getElementById('trial-name').value='';document.getElementById('trial-phone').value='';populateDropdown('trial-course',getDB('qa_c'));}
+            if(id==='modal-add-teacher'){document.getElementById('add-t-name').value='';document.getElementById('add-t-pass').value='';populateDropdown('add-t-course',getDB('qa_c'));document.getElementById('add-t-img').value='';}
+            if(id==='modal-add-student'){document.getElementById('add-s-name').value='';document.getElementById('add-s-pass').value='';populateDropdown('add-s-course',getDB('qa_c'));populateTeacherDropdown();document.getElementById('add-s-img').value='';}
+            if(id==='modal-add-course'){document.getElementById('add-c-name').value='';document.getElementById('add-c-urdu').value='';document.getElementById('add-c-desc').value='';}
+            /* Reset confirm modal open hone par password field clear aur focus */
+            if(id==='modal-reset-confirm'){document.getElementById('reset-confirm-pass').value='';setTimeout(function(){document.getElementById('reset-confirm-pass').focus();},100);}
+        }
+        function closeModal(id){document.getElementById(id).classList.remove('active');}
+        function switchView(id){document.querySelectorAll('.view-section').forEach(function(e){e.classList.remove('active');});document.getElementById('view-'+id).classList.add('active');window.scrollTo(0,0);if(id==='landing')headerScrolled=false;}
+        function switchAdminTab(id,btn){document.querySelectorAll('.admin-tab').forEach(function(e){e.classList.add('hidden');});document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.admin-tab-btn').forEach(function(b){b.classList.remove('admin-tab-active');});if(btn)btn.classList.add('admin-tab-active');if(id==='tab-admin-hero')setHeroImageToDOM();}
+        function populateDropdown(sid,items){var s=document.getElementById(sid);if(!s)return;s.innerHTML='';for(var i=0;i<items.length;i++){var o=document.createElement('option');o.value=items[i].id;o.innerHTML=items[i].name;s.appendChild(o);}}
+        function populateTeacherDropdown(){var s=document.getElementById('add-s-teacher');var t=getDB('qa_t');s.innerHTML='<option value="">-- Assign Teacher --</option>';for(var i=0;i<t.length;i++){var o=document.createElement('option');o.value=t[i].id;o.innerHTML=t[i].name;s.appendChild(o);}}
+
+        function renderCoursesLanding(){
+            var c=getDB('qa_c');var g=document.getElementById('course-grid');if(!g)return;g.innerHTML='';
+            for(var i=0;i<c.length;i++){
+                var icon=getCourseIcon(c[i].name);var num=String(i+1).padStart(2,'0');var desc=c[i].desc||'';var urdu=c[i].nameUrdu||'';
+                g.innerHTML+='<div class="course-card"><div class="course-card-accent"></div><div class="course-num-badge">'+num+'</div><div class="p-6 pt-5"><div class="flex items-start gap-4 mb-4"><div class="course-icon-wrap flex-shrink-0"><i class="fas '+icon+'"></i></div><div class="flex-1 min-w-0"><h3 class="course-title">'+c[i].name+'</h3>'+(urdu?'<p class="course-urdu">'+urdu+'</p>':'')+'</div></div><div class="course-divider"></div>'+(desc?'<p class="course-desc">'+desc+'</p><div class="course-divider"></div>':'')+'<div class="flex items-center justify-between mt-1"><span class="course-tag"><i class="fas fa-atom text-[0.6rem]"></i> Chemistry</span><span class="text-xs text-gray-400 font-semibold">Paid</span></div></div></div>';
             }
-            /* Otherwise pick next from bank */
-            var idx = activeQuestionIndex % chemistryQuestions.length;
-            var qObj = {
-                id: generateId(),
-                text: chemistryQuestions[idx],
-                date: new Date().toLocaleDateString(),
-                index: idx
-            };
-            activeQuestionIndex++;
-            if (curStudent) {
-                localStorage.setItem('active_q_' + curStudent.id, JSON.stringify(qObj));
-            }
-            return qObj;
         }
 
-        function submitAnswer() {
-            var answerText = document.getElementById('student-answer-input').value.trim();
-            if (!answerText) {
-                alert("Jawab likhein pehle!");
+        function submitTrial(){var n=document.getElementById('trial-name').value.trim();var p=document.getElementById('trial-phone').value.trim();var c=document.getElementById('trial-course').value;if(!n||!p)return alert("Fill Name and Phone.");var tr=getDB('qa_tr');tr.push({id:generateId(),name:n,phone:p,course:c,date:new Date().toLocaleDateString()});setDB('qa_tr',tr);closeModal('modal-free-trial');alert("Trial requested successfully!");}
+
+        /* ===== FACTORY RESET — PASSWORD CONFIRMATION ===== */
+        function resetWholeSystem() {
+            /* Step 1: Open confirmation modal with password field */
+            openModal('modal-reset-confirm');
+        }
+
+        function executeFactoryReset() {
+            var enteredPass = document.getElementById('reset-confirm-pass').value.trim();
+
+            /* Check if password matches admin password */
+            if (enteredPass !== 'chem5000') {
+                /* Wrong password — shake the modal */
+                var modalBox = document.querySelector('#modal-reset-confirm .bg-white');
+                modalBox.classList.remove('shake');
+                void modalBox.offsetWidth;
+                modalBox.classList.add('shake');
+
+                /* Show inline error */
+                var passField = document.getElementById('reset-confirm-pass');
+                passField.classList.add('border-red-500');
+                passField.value = '';
+                passField.focus();
                 return;
             }
-            if (!currentActiveQuestion) return;
 
-            /* Save to recent questions in localStorage */
-            var recentKey = 'recent_q_' + (curStudent ? curStudent.id : 'default');
-            var recentArr = JSON.parse(localStorage.getItem(recentKey) || '[]');
-            
-            recentArr.unshift({
-                question: currentActiveQuestion.text,
-                answer: answerText,
-                date: new Date().toLocaleString()
-            });
-
-            /* Keep only last 20 recent */
-            if (recentArr.length > 20) recentArr = recentArr.slice(0, 20);
-            localStorage.setItem(recentKey, JSON.stringify(recentArr));
-
-            /* Remove active question so next one loads */
-            if (curStudent) {
-                localStorage.removeItem('active_q_' + curStudent.id);
-            }
-
-            /* Clear input and refresh */
-            document.getElementById('student-answer-input').value = '';
-            currentActiveQuestion = null;
-            loadQuestionSection();
-            alert("Jawab submit ho gaya! Recent me check karein.");
-        }
-
-        function loadQuestionSection() {
-            if (!curStudent) return;
-
-            /* Load active question */
-            currentActiveQuestion = getNextQuestion();
-            document.getElementById('active-question-text').innerText = currentActiveQuestion.text;
-            document.getElementById('active-question-date').innerText = currentActiveQuestion.date;
-
-            /* Load recent questions */
-            var recentKey = 'recent_q_' + curStudent.id;
-            var recentArr = JSON.parse(localStorage.getItem(recentKey) || '[]');
-            var listEl = document.getElementById('recent-questions-list');
-            var noMsg = document.getElementById('no-recent-msg');
-            listEl.innerHTML = '';
-
-            if (recentArr.length === 0) {
-                noMsg.classList.remove('hidden');
-            } else {
-                noMsg.classList.add('hidden');
-                for (var i = 0; i < recentArr.length; i++) {
-                    var item = recentArr[i];
-                    var html = '<li class="slide-in p-4 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition">';
-                    html += '<div class="flex items-start gap-3">';
-                    html += '<div class="w-8 h-8 rounded-full bg-gold text-navy flex items-center justify-center flex-shrink-0 text-xs font-bold">Q</div>';
-                    html += '<div class="flex-1">';
-                    html += '<p class="font-semibold text-navy text-sm">' + item.question + '</p>';
-                    html += '<div class="mt-2 ml-4 pl-3 border-l-2 border-emerald">';
-                    html += '<p class="text-emerald-700 font-medium text-sm"><i class="fas fa-check-circle mr-1"></i>' + item.answer + '</p>';
-                    html += '</div>';
-                    html += '<p class="text-xs text-gray-400 mt-2"><i class="far fa-clock mr-1"></i>' + item.date + '</p>';
-                    html += '</div></div></li>';
-                    listEl.innerHTML += html;
-                }
-            }
-        }
-
-        function initCloudDB() {
-            document.getElementById('cloud-loader').style.display = 'flex';
-            
-            var failSafe = setTimeout(function() {
-                document.getElementById('cloud-loader').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                renderCoursesLanding(); checkSession();
-            }, 4000);
-
-            database.ref('chem_buddy').once('value').then(function(snapshot) {
-                clearTimeout(failSafe);
-                var data = snapshot.val() || {};
-                
-                if(data.qa_c) localStorage.setItem('qa_c', JSON.stringify(data.qa_c)); else initDefault('qa_c');
-                if(data.qa_t) localStorage.setItem('qa_t', JSON.stringify(data.qa_t)); else initDefault('qa_t');
-                if(data.qa_s) localStorage.setItem('qa_s', JSON.stringify(data.qa_s)); else initDefault('qa_s');
-                if(data.qa_n) localStorage.setItem('qa_n', JSON.stringify(data.qa_n)); else initDefault('qa_n');
-                if(data.qa_tr) localStorage.setItem('qa_tr', JSON.stringify(data.qa_tr)); else initDefault('qa_tr');
-                if(data.qa_p) cloudPDFs = data.qa_p; else cloudPDFs = [];
-
-                document.getElementById('cloud-loader').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                
-                renderCoursesLanding(); checkSession();
-            }).catch(function(error) {
-                clearTimeout(failSafe);
-                document.getElementById('cloud-loader').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                renderCoursesLanding(); checkSession();
+            /* Correct password — close modal and perform reset */
+            closeModal('modal-reset-confirm');
+            database.ref('chem_buddy').remove().then(function() {
+                localStorage.clear();
+                alert("System Reset Successful! Page reload ho raha hai...");
+                location.reload();
+            }).catch(function(err) {
+                alert("Firebase me error aaya: " + err.message);
             });
         }
 
-        function initDefault(key) {
-            if(key === 'qa_c') {
-                var defC = [
-                    { id: 'c1', name: 'Analytical Chemistry', nameUrdu: 'انالیٹیکل کیمسٹری', fee: 'Paid', desc: 'Matter ki janch partal (miqdar aur qisam) aur components ki pehchan.' },
-                    { id: 'c2', name: 'Biochemistry', nameUrdu: 'بائیو کیمسٹری', fee: 'Paid', desc: 'Zinda jandaron ke andar hone walay chemical processes ki study.' },
-                    { id: 'c3', name: 'Environmental Chemistry', nameUrdu: 'ماحولیاتی کیمسٹری', fee: 'Paid', desc: 'Hawa, pani aur matti mein pollution aur chemical changes ka mutaila.' },
-                    { id: 'c4', name: 'Materials Science', nameUrdu: 'میٹیریل سائنس', fee: 'Paid', desc: 'Khas khusoosiyat walay naye materials (jaise nanomaterials) banana.' },
-                    { id: 'c5', name: 'Forensic Chemistry', nameUrdu: 'فارنزک کیمسٹری', fee: 'Paid', desc: 'Jurm ki tehqiqat (DNA, toxicology) mein chemical analysis ka istemal.' },
-                    { id: 'c6', name: 'Pharmaceutical Chemistry', nameUrdu: 'فارماسیوٹیکل کیمسٹری', fee: 'Paid', desc: 'Nayi dawaiyon (medicines) ki tayari, testing aur behtari.' }
-                ];
-                localStorage.setItem('qa_c', JSON.stringify(defC));
-            } else { localStorage.setItem(key, JSON.stringify([])); }
+        function handleLogin(role){
+            if(role==='admin'){if(document.getElementById('log-admin-user').value.trim()==='admin'&&document.getElementById('log-admin-pass').value.trim()==='chem5000'){closeModal('modal-admin-login');sessionStorage.setItem('auth_role','admin');loadAdminDashboard();switchView('admin');}else shakeEl('modal-admin-login');}
+            else if(role==='teacher'){var tp=document.getElementById('log-teacher-pass').value.trim();var ts=getDB('qa_t');var f=null;for(var i=0;i<ts.length;i++)if(ts[i].password===tp)f=ts[i];if(f){curTeacher=f;closeModal('modal-teacher-login');sessionStorage.setItem('auth_role','teacher');sessionStorage.setItem('auth_user',JSON.stringify(f));loadTeacherDashboard();switchView('teacher');}else shakeEl('modal-teacher-login');}
+            else if(role==='student'){var sp=document.getElementById('log-student-pass').value.trim();var ss=getDB('qa_s');var fs=null;for(var j=0;j<ss.length;j++)if(ss[j].password===sp)fs=ss[j];if(fs){curStudent=fs;closeModal('modal-student-login');sessionStorage.setItem('auth_role','student');sessionStorage.setItem('auth_user',JSON.stringify(fs));loadStudentDashboard();switchView('student');}else shakeEl('modal-student-login');}
+        }
+        function checkSession(){var r=sessionStorage.getItem('auth_role');if(r==='admin'){switchView('admin');loadAdminDashboard();}else if(r==='teacher'){curTeacher=JSON.parse(sessionStorage.getItem('auth_user'));switchView('teacher');loadTeacherDashboard();}else if(r==='student'){curStudent=JSON.parse(sessionStorage.getItem('auth_user'));switchView('student');loadStudentDashboard();}}
+        function shakeEl(id){var e=document.getElementById(id).querySelector('.bg-white');if(e){e.classList.remove('shake');void e.offsetWidth;e.classList.add('shake');}}
+        function logout(){curTeacher=null;curStudent=null;sessionStorage.removeItem('auth_role');sessionStorage.removeItem('auth_user');switchView('landing');}
+        function getCourseName(id,c){for(var i=0;i<c.length;i++)if(c[i].id===id)return c[i].name;return"Unknown";}
+
+        function loadAdminDashboard(){
+            var ts=getDB('qa_t'),ss=getDB('qa_s'),cs=getDB('qa_c'),trs=getDB('qa_tr');
+            var tT=document.getElementById('table-admin-teachers');tT.innerHTML='';
+            for(var i=0;i<ts.length;i++){var t=ts[i];tT.innerHTML+='<tr class="border-b hover:bg-gray-50"><td class="p-3"><img src="'+(t.img||placeholderImg)+'" class="avatar-img"></td><td class="p-3 font-bold">'+t.name+'</td><td class="p-3 text-sm text-gray-600">'+getCourseName(t.course,cs)+'</td><td class="p-3 text-sm font-mono bg-gray-100 px-2 py-1 rounded">'+t.password+'</td><td class="p-3"><div class="flex gap-1"><button onclick="editTeacher(\''+t.id+'\')" class="px-2 py-1 bg-blue-100 text-blue rounded text-xs font-bold hover:bg-blue-200"><i class="fas fa-edit"></i></button><button onclick="deleteTeacher(\''+t.id+'\')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200"><i class="fas fa-trash"></i></button></div></td></tr>';}
+            if(!ts.length)tT.innerHTML='<tr><td colspan="5" class="p-6 text-center text-gray-400">Koi teacher nahi.</td></tr>';
+            var sT=document.getElementById('table-admin-students');sT.innerHTML='';
+            for(var j=0;j<ss.length;j++){var s=ss[j];sT.innerHTML+='<tr class="border-b hover:bg-gray-50"><td class="p-3"><img src="'+(s.img||placeholderImg)+'" class="avatar-img"></td><td class="p-3 font-bold">'+s.name+'</td><td class="p-3 text-sm text-gray-600">'+getCourseName(s.course,cs)+'</td><td class="p-3 text-sm font-mono bg-gray-100 px-2 py-1 rounded">'+s.password+'</td><td class="p-3"><div class="flex gap-1"><button onclick="editStudent(\''+s.id+'\')" class="px-2 py-1 bg-blue-100 text-blue rounded text-xs font-bold hover:bg-blue-200"><i class="fas fa-edit"></i></button><button onclick="deleteStudent(\''+s.id+'\')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200"><i class="fas fa-trash"></i></button></div></td></tr>';}
+            if(!ss.length)sT.innerHTML='<tr><td colspan="5" class="p-6 text-center text-gray-400">Koi student nahi.</td></tr>';
+            var cT=document.getElementById('table-admin-courses');cT.innerHTML='';
+            for(var k=0;k<cs.length;k++){var c=cs[k];cT.innerHTML+='<tr class="border-b hover:bg-gray-50"><td class="p-3 font-bold">'+c.name+'</td><td class="p-3 urdu text-gray-600">'+(c.nameUrdu||'')+'</td><td class="p-3 text-sm text-gray-500 max-w-xs truncate">'+(c.desc||'')+'</td><td class="p-3"><button onclick="deleteCourse(\''+c.id+'\')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200"><i class="fas fa-trash"></i></button></td></tr>';}
+            if(!cs.length)cT.innerHTML='<tr><td colspan="4" class="p-6 text-center text-gray-400">Koi course nahi.</td></tr>';
+            var trT=document.getElementById('table-admin-trials');trT.innerHTML='';
+            for(var m=0;m<trs.length;m++){var tr=trs[m];trT.innerHTML+='<tr class="border-b hover:bg-gray-50"><td class="p-3 text-sm text-gray-500">'+tr.date+'</td><td class="p-3 font-bold">'+tr.name+'</td><td class="p-3 text-sm">'+tr.phone+'</td><td class="p-3 text-sm text-gray-600">'+getCourseName(tr.course,cs)+'</td><td class="p-3"><button onclick="deleteTrial(\''+tr.id+'\')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200"><i class="fas fa-trash"></i></button></td></tr>';}
+            if(!trs.length)trT.innerHTML='<tr><td colspan="5" class="p-6 text-center text-gray-400">Koi trial nahi.</td></tr>';
+            setHeroImageToDOM();
         }
 
-        function getDB(key) { 
-            if(key === 'qa_p') return cloudPDFs;
-            var d = localStorage.getItem(key); 
-            return d ? JSON.parse(d) : []; 
-        }
+        function saveTeacher(){var n=document.getElementById('add-t-name').value.trim();var c=document.getElementById('add-t-course').value;var p=document.getElementById('add-t-pass').value.trim();if(!n||!p)return alert("Zaruri.");var f=document.getElementById('add-t-img').files[0];if(f){if(f.size>1*1024*1024)return alert("1MB se kam.");var r=new FileReader();r.onload=function(e){pushTeacher(n,c,p,e.target.result);};r.readAsDataURL(f);}else pushTeacher(n,c,p,'');}
+        function pushTeacher(n,c,p,img){var a=getDB('qa_t');a.push({id:generateId(),name:n,course:c,password:p,img:img});setDB('qa_t',a);closeModal('modal-add-teacher');loadAdminDashboard();}
+        function editTeacher(id){var a=getDB('qa_t');var f=null;for(var i=0;i<a.length;i++)if(a[i].id===id)f=a[i];if(!f)return;editTargetId=id;document.getElementById('upd-t-name').value=f.name;document.getElementById('upd-t-pass').value=f.password;document.getElementById('upd-t-img').value='';openModal('modal-upd-teacher');}
+        function saveUpdTeacher(){var a=getDB('qa_t');var n=document.getElementById('upd-t-name').value.trim();var p=document.getElementById('upd-t-pass').value.trim();if(!n||!p)return alert("Zaruri.");var f=document.getElementById('upd-t-img').files[0];for(var i=0;i<a.length;i++){if(a[i].id===editTargetId){a[i].name=n;a[i].password=p;if(f){if(f.size>1*1024*1024)return alert("1MB se kam.");var r=new FileReader();r.onload=(function(idx){return function(e){a[idx].img=e.target.result;setDB('qa_t',a);closeModal('modal-upd-teacher');loadAdminDashboard();};})(i);r.readAsDataURL(f);return;}break;}}setDB('qa_t',a);closeModal('modal-upd-teacher');loadAdminDashboard();}
+        function deleteTeacher(id){if(!confirm("Delete?"))return;setDB('qa_t',getDB('qa_t').filter(function(t){return t.id!==id;}));loadAdminDashboard();}
+        function saveStudent(){var n=document.getElementById('add-s-name').value.trim();var c=document.getElementById('add-s-course').value;var t=document.getElementById('add-s-teacher').value;var p=document.getElementById('add-s-pass').value.trim();if(!n||!p)return alert("Zaruri.");var f=document.getElementById('add-s-img').files[0];if(f){if(f.size>1*1024*1024)return alert("1MB se kam.");var r=new FileReader();r.onload=function(e){pushStudent(n,c,t,p,e.target.result);};r.readAsDataURL(f);}else pushStudent(n,c,t,p,'');}
+        function pushStudent(n,c,t,p,img){var a=getDB('qa_s');a.push({id:generateId(),name:n,course:c,teacher:t,password:p,img:img});setDB('qa_s',a);closeModal('modal-add-student');loadAdminDashboard();}
+        function editStudent(id){var a=getDB('qa_s');var f=null;for(var i=0;i<a.length;i++)if(a[i].id===id)f=a[i];if(!f)return;editTargetId=id;document.getElementById('upd-s-name').value=f.name;document.getElementById('upd-s-pass').value=f.password;document.getElementById('upd-s-img').value='';openModal('modal-upd-student');}
+        function saveUpdStudent(){var a=getDB('qa_s');var n=document.getElementById('upd-s-name').value.trim();var p=document.getElementById('upd-s-pass').value.trim();if(!n||!p)return alert("Zaruri.");var f=document.getElementById('upd-s-img').files[0];for(var i=0;i<a.length;i++){if(a[i].id===editTargetId){a[i].name=n;a[i].password=p;if(f){if(f.size>1*1024*1024)return alert("1MB se kam.");var r=new FileReader();r.onload=(function(idx){return function(e){a[idx].img=e.target.result;setDB('qa_s',a);closeModal('modal-upd-student');loadAdminDashboard();};})(i);r.readAsDataURL(f);return;}break;}}setDB('qa_s',a);closeModal('modal-upd-student');loadAdminDashboard();}
+        function deleteStudent(id){if(!confirm("Delete?"))return;setDB('qa_s',getDB('qa_s').filter(function(s){return s.id!==id;}));loadAdminDashboard();}
+        function saveCourse(){var n=document.getElementById('add-c-name').value.trim();var u=document.getElementById('add-c-urdu').value.trim();var d=document.getElementById('add-c-desc').value.trim();if(!n)return alert("Course name zaruri.");var a=getDB('qa_c');a.push({id:generateId(),name:n,nameUrdu:u,desc:d,fee:'Paid'});setDB('qa_c',a);closeModal('modal-add-course');loadAdminDashboard();renderCoursesLanding();}
+        function deleteCourse(id){if(!confirm("Delete?"))return;setDB('qa_c',getDB('qa_c').filter(function(c){return c.id!==id;}));loadAdminDashboard();renderCoursesLanding();}
+        function deleteTrial(id){if(!confirm("Delete?"))return;setDB('qa_tr',getDB('qa_tr').filter(function(t){return t.id!==id;}));loadAdminDashboard();}
 
-        function setDB(key, data) { 
-            if(key === 'qa_p') { cloudPDFs = data; } 
-            else { localStorage.setItem(key, JSON.stringify(data)); }
-            database.ref('chem_buddy/' + key).set(data).catch(function(err){ console.log("Cloud update error:", err); });
-        }
-        function generateId() { return Math.random().toString(36).substr(2, 9); }
+        function loadTeacherDashboard(){if(!curTeacher)return;document.getElementById('teacher-name-display').innerText=curTeacher.name;document.getElementById('t-dash-img').src=curTeacher.img||placeholderImg;var allS=getDB('qa_s');var myS=allS.filter(function(s){return s.teacher===curTeacher.id;});var sel=document.getElementById('ts-select');sel.innerHTML='';for(var i=0;i<myS.length;i++){var o=document.createElement('option');o.value=myS[i].id;o.innerHTML=myS[i].name;sel.appendChild(o);}if(!myS.length)sel.innerHTML='<option value="">-- Koi student nahi --</option>';}
+        function handlePDFUpload(){var sid=document.getElementById('ts-select').value;if(!sid)return alert("Student select karein.");var title=document.getElementById('ts-pdf-title').value.trim();if(!title)return alert("Title likhein.");var file=document.getElementById('ts-pdf-file').files[0];if(!file)return alert("File select karein.");if(file.size>4*1024*1024)return alert("4MB se bari.");var r=new FileReader();r.onload=function(e){var a=getDB('qa_p');a.push({id:generateId(),studentId:sid,title:title,data:e.target.result,date:new Date().toLocaleDateString()});setDB('qa_p',a);document.getElementById('ts-pdf-title').value='';document.getElementById('ts-pdf-file').value='';alert("Uploaded!");};r.readAsDataURL(file);}
+        function handlePostNotice(){var sid=document.getElementById('ts-select').value;if(!sid)return alert("Student select karein.");var text=document.getElementById('ts-notice-text').value.trim();if(!text)return alert("Notice likhein.");var a=getDB('qa_n');a.push({id:generateId(),studentId:sid,text:text,date:new Date().toLocaleString()});setDB('qa_n',a);document.getElementById('ts-notice-text').value='';alert("Posted!");}
 
-        function openModal(id) { 
-            document.getElementById(id).classList.add('active'); 
-            if(id==='modal-free-trial'){ document.getElementById('trial-name').value=''; document.getElementById('trial-phone').value=''; populateDropdown('trial-course', getDB('qa_c')); } 
-            if(id==='modal-add-teacher'){ document.getElementById('add-t-name').value=''; document.getElementById('add-t-pass').value=''; populateDropdown('add-t-course', getDB('qa_c')); document.getElementById('add-t-img').value=''; } 
-            if(id==='modal-add-student'){ document.getElementById('add-s-name').value=''; document.getElementById('add-s-pass').value=''; populateDropdown('add-s-course', getDB('qa_c')); populateTeacherDropdown(); document.getElementById('add-s-img').value=''; } 
-            if(id==='modal-add-course'){ document.getElementById('add-c-name').value=''; document.getElementById('add-c-urdu').value=''; document.getElementById('add-c-desc').value=''; } 
-        }
-        
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function switchView(id) { document.querySelectorAll('.view-section').forEach(function(e){ e.classList.remove('active'); }); document.getElementById('view-'+id).classList.add('active'); window.scrollTo(0,0); }
-        function switchAdminTab(id) { document.querySelectorAll('.admin-tab').forEach(function(e){ e.classList.add('hidden'); }); document.getElementById(id).classList.remove('hidden'); }
-        function populateDropdown(selectId, items) { var sel = document.getElementById(selectId); if(!sel) return; sel.innerHTML=''; for(var i=0; i<items.length; i++){ var o = document.createElement('option'); o.value = items[i].id; o.innerHTML = items[i].name; sel.appendChild(o); } }
-        function populateTeacherDropdown() { var sel = document.getElementById('add-s-teacher'); var t = getDB('qa_t'); var c = getDB('qa_c'); sel.innerHTML='<option value="">-- Assign Teacher --</option>'; for(var i=0; i<t.length; i++){ var o = document.createElement('option'); o.value = t[i].id; o.innerHTML = t[i].name; sel.appendChild(o); } }
+        function loadStudentDashboard(){if(!curStudent)return;document.getElementById('student-name-display').innerText=curStudent.name;document.getElementById('s-dash-img').src=curStudent.img||placeholderImg;document.getElementById('s-dash-name').innerText=curStudent.name;document.getElementById('st-dash-course').innerText=getCourseName(curStudent.course,getDB('qa_c'));var allN=getDB('qa_n');var myN=allN.filter(function(n){return n.studentId===curStudent.id;});var nL=document.getElementById('st-notices-list');nL.innerHTML='';for(var i=0;i<myN.length;i++)nL.innerHTML+='<li class="slide-in p-3 bg-yellow-50 border-l-4 border-gold rounded"><p class="text-navy font-medium">'+myN[i].text+'</p><p class="text-xs text-gray-400 mt-1"><i class="far fa-clock mr-1"></i>'+myN[i].date+'</p></li>';if(!myN.length)nL.innerHTML='<li class="text-gray-400 text-sm text-center py-4">Koi notice nahi.</li>';var allP=getDB('qa_p');var myP=allP.filter(function(p){return p.studentId===curStudent.id;});var pL=document.getElementById('st-downloads-list');pL.innerHTML='';for(var j=0;j<myP.length;j++){var isPDF=myP[j].data&&myP[j].data.indexOf('application/pdf')>-1;var ic=isPDF?'fa-file-pdf text-red-500':'fa-file-image text-emerald-500';pL.innerHTML+='<li class="slide-in p-3 bg-emerald-50 border-l-4 border-emerald rounded flex items-center justify-between"><div class="flex items-center gap-3"><i class="fas '+ic+' text-xl"></i><div><p class="font-bold text-navy">'+myP[j].title+'</p><p class="text-xs text-gray-400">'+myP[j].date+'</p></div></div><a href="'+myP[j].data+'" download="'+myP[j].title+'" class="px-3 py-1 bg-blue text-white rounded text-xs font-bold hover:bg-blue/90"><i class="fas fa-download"></i> Download</a></li>';}if(!myP.length)pL.innerHTML='<li class="text-gray-400 text-sm text-center py-4">Koi material nahi.</li>';loadQuestionSection();}
 
-        function renderCoursesLanding() { 
-            var c = getDB('qa_c'); var grid = document.getElementById('course-grid'); if(!grid) return; grid.innerHTML = ''; 
-            for(var i=0; i<c.length; i++){ 
-                var descHtml = c[i].desc ? "<p class='text-sm text-gray-600 h-16 overflow-hidden'>" + c[i].desc + "</p>" : "";
-                grid.innerHTML += "<div class='bg-cream rounded-xl shadow p-8 border border-gold/20 flex flex-col'><div class='text-blue text-4xl mb-4'><i class='fas fa-flask'></i></div><h3 class='heading text-xl font-bold text-navy'>" + c[i].name + "</h3><h4 class='urdu text-gray-500 mb-2'>" + c[i].nameUrdu + "</h4>" + descHtml + "</div>"; 
-            } 
-        }
-        
-        function submitTrial() { 
-            var n = document.getElementById('trial-name').value.trim(); 
-            var p = document.getElementById('trial-phone').value.trim(); 
-            var c = document.getElementById('trial-course').value; 
-            if(!n || !p) return alert("Fill Name and Phone."); 
-            
-            var tr = getDB('qa_tr'); 
-            tr.push({ id: generateId(), name: n, phone: p, course: c, date: new Date().toLocaleDateString() }); 
-            setDB('qa_tr', tr); 
-            
-            var myPhone = "YOUR_WHATSAPP_NUMBER"; 
-            var myApiKey = "YOUR_API_KEY"; 
-            
-            if(myApiKey !== "YOUR_API_KEY") {
-                var cName = getCourseName(c, getDB('qa_c'));
-                var msg = encodeURIComponent("Chem Buddy Alert: Nayi Trial Request!\n\nName: " + n + "\nPhone: " + p + "\nCourse: " + cName + "\n\nFauran Admin Panel check karein.");
-                var url = "https://api.callmebot.com/whatsapp.php?phone=" + myPhone + "&text=" + msg + "&apikey=" + myApiKey;
-                fetch(url, { mode: 'no-cors' }).catch(function(e){ console.log("Alert Error"); });
-            }
-
-            closeModal('modal-free-trial'); 
-            alert("Trial requested successfully!"); 
-        }
-
-        function resetWholeSystem() {
-            if(confirm('Khabardar! Aap ka pehle ka sab data (Students, Teachers, Courses) delete ho jayega aur sirf naye 6 Default Courses aa jayenge. Kya aap waqai reset karna chahte hain?')) {
-                database.ref('chem_buddy').remove().then(function() {
-                    localStorage.clear();
-                    alert("System Reset Successful! Page reload ho raha hai...");
-                    location.reload();
-                });
-            }
-        }
-
-        function handleLogin(role) {
-            if(role === 'admin') {
-                if(document.getElementById('log-admin-user').value.trim() === 'admin' && document.getElementById('log-admin-pass').value.trim() === 'chem5000') { closeModal('modal-admin-login'); sessionStorage.setItem('auth_role', 'admin'); loadAdminDashboard(); switchView('admin'); } else shakeEl('modal-admin-login');
-            } else if(role === 'teacher') {
-                var tp = document.getElementById('log-teacher-pass').value.trim(); var ts = getDB('qa_t'); var found = null;
-                for(var i=0; i<ts.length; i++) if(ts[i].password === tp) found = ts[i];
-                if(found) { curTeacher = found; closeModal('modal-teacher-login'); sessionStorage.setItem('auth_role', 'teacher'); sessionStorage.setItem('auth_user', JSON.stringify(found)); loadTeacherDashboard(); switchView('teacher'); } else shakeEl('modal-teacher-login');
-            } else if(role === 'student') {
-                var sp = document.getElementById('log-student-pass').value.trim(); var ss = getDB('qa_s'); var fS = null;
-                for(var j=0; j<ss.length; j++) if(ss[j].password === sp) fS = ss[j];
-                if(fS) { curStudent = fS; closeModal('modal-student-login'); sessionStorage.setItem('auth_role', 'student'); sessionStorage.setItem('auth_user', JSON.stringify(fS)); loadStudentDashboard(); switchView('student'); } else shakeEl('modal-student-login');
-            }
-        }
-        function checkSession() { var role = sessionStorage.getItem('auth_role'); if(role === 'admin') { switchView('admin'); loadAdminDashboard(); } else if(role === 'teacher') { curTeacher = JSON.parse(sessionStorage.getItem('auth_user')); switchView('teacher'); loadTeacherDashboard(); } else if(role === 'student') { curStudent = JSON.parse(sessionStorage.getItem('auth_user')); switchView('student'); loadStudentDashboard(); } }
-        function shakeEl(id) { var e = document.getElementById(id).querySelector('.bg-white'); e.classList.remove('shake'); void e.offsetWidth; e.classList.add('shake'); }
-        function logout() { curTeacher=null; curStudent=null; sessionStorage.removeItem('auth_role'); sessionStorage.removeItem('auth_user'); switchView('landing'); }
-
-        function getCourseName(id, c) { for(var i=0; i<c.length; i++) if(c[i].id === id) return c[i].name; return "Unknown"; }
-
-        function loadAdminDashboard() {
-            var ts = getDB('qa_t'); var ss = getDB('qa_s'); var cs = getDB('qa_c'); var trs = getDB('qa_tr');
-            
-            var tTb = document.getElementById('table-admin-teachers'); tTb.innerHTML='';
-            for(var i=0; i<ts.length; i++) tTb.innerHTML += "<tr class='border-b'><td class='p-2'><img src='"+(ts[i].img||placeholderImg)+"' class='avatar-img'></td><td class='p-2'>"+ts[i].name+"</td><td class='p-2'>"+getCourseName(ts[i].course, cs)+"</td><td class='p-2 font-bold'>"+ts[i].password+"</td><td class='p-2 flex gap-2'><button type='button' onclick='editTeacherAdmin(\""+ts[i].id+"\")' class='text-blue-600 bg-blue-100 px-3 py-1 rounded'>Edit</button><button type='button' onclick='deleteRecord(\"qa_t\",\""+ts[i].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
-            
-            var sTb = document.getElementById('table-admin-students'); sTb.innerHTML='';
-            for(var j=0; j<ss.length; j++) sTb.innerHTML += "<tr class='border-b'><td class='p-2'><img src='"+(ss[j].img||placeholderImg)+"' class='avatar-img'></td><td class='p-2'>"+ss[j].name+"</td><td class='p-2'>"+getCourseName(ss[j].course, cs)+"</td><td class='p-2 font-bold'>"+ss[j].password+"</td><td class='p-2 flex gap-2'><button type='button' onclick='editStudentAdmin(\""+ss[j].id+"\")' class='text-blue-600 bg-blue-100 px-3 py-1 rounded'>Edit</button><button type='button' onclick='deleteRecord(\"qa_s\",\""+ss[j].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
-
-            var cTb = document.getElementById('table-admin-courses'); cTb.innerHTML='';
-            for(var k=0; k<cs.length; k++) {
-                var descShort = cs[k].desc ? cs[k].desc.substring(0,30) + '...' : '-';
-                cTb.innerHTML += "<tr class='border-b'><td class='p-2 font-bold'>"+cs[k].name+"</td><td class='p-2 urdu'>"+cs[k].nameUrdu+"</td><td class='p-2 text-sm text-gray-500'>"+descShort+"</td><td class='p-2'><button type='button' onclick='deleteRecord(\"qa_c\",\""+cs[k].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
-            }
-
-            var trTb = document.getElementById('table-admin-trials'); trTb.innerHTML='';
-            for(var m=0; m<trs.length; m++) trTb.innerHTML += "<tr class='border-b'><td class='p-2 text-sm'>"+trs[m].date+"</td><td class='p-2 font-bold'>"+trs[m].name+"</td><td class='p-2'>"+trs[m].phone+"</td><td class='p-2'>"+getCourseName(trs[m].course, cs)+"</td><td class='p-2'><button type='button' onclick='deleteRecord(\"qa_tr\",\""+trs[m].id+"\")' class='text-red-500 bg-red-100 px-3 py-1 rounded'>Delete</button></td></tr>";
-        }
-
-        function deleteRecord(key, id) {
-            if(!confirm('Are you sure you want to delete this record?')) return;
-            var d = getDB(key); var res = [];
-            for(var i=0; i<d.length; i++) if(d[i].id != id) res.push(d[i]);
-            setDB(key, res); if(key === 'qa_c') renderCoursesLanding(); loadAdminDashboard();
-        }
-
-        function editTeacherAdmin(id) { editTargetId = id; var ts = getDB('qa_t'); var t = null; for(var i=0; i<ts.length; i++) if(ts[i].id == id) t = ts[i]; if(!t) return; document.getElementById('upd-t-name').value = t.name; document.getElementById('upd-t-pass').value = t.password; document.getElementById('upd-t-img').value = ''; document.getElementById('modal-upd-teacher').classList.add('active'); }
-        function saveUpdTeacher() { var n = document.getElementById('upd-t-name').value.trim(); var p = document.getElementById('upd-t-pass').value.trim(); if(!n || !p) return alert('Name/Password empty.'); var file = document.getElementById('upd-t-img').files[0]; if(file) { var r = new FileReader(); r.onload = function(e){ try{ finishUpdTeacher(n,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { var ts = getDB('qa_t'); var oldImg = ""; for(var i=0; i<ts.length; i++) if(ts[i].id == editTargetId) oldImg = ts[i].img; finishUpdTeacher(n, p, oldImg); } }
-        function finishUpdTeacher(n, p, imgData) { var t = getDB('qa_t'); for(var i=0; i<t.length; i++) if(t[i].id == editTargetId){ t[i].name = n; t[i].password = p; t[i].img = imgData; } setDB('qa_t', t); closeModal('modal-upd-teacher'); loadAdminDashboard(); alert("Updated!"); }
-
-        function editStudentAdmin(id) { editTargetId = id; var ss = getDB('qa_s'); var s = null; for(var i=0; i<ss.length; i++) if(ss[i].id == id) s = ss[i]; if(!s) return; document.getElementById('upd-s-name').value = s.name; document.getElementById('upd-s-pass').value = s.password; document.getElementById('upd-s-img').value = ''; document.getElementById('modal-upd-student').classList.add('active'); }
-        function saveUpdStudent() { var n = document.getElementById('upd-s-name').value.trim(); var p = document.getElementById('upd-s-pass').value.trim(); if(!n || !p) return alert('Name/Password empty.'); var file = document.getElementById('upd-s-img').files[0]; if(file) { var r = new FileReader(); r.onload = function(e){ try{ finishUpdStudent(n,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { var ss = getDB('qa_s'); var oldImg = ""; for(var i=0; i<ss.length; i++) if(ss[i].id == editTargetId) oldImg = ss[i].img; finishUpdStudent(n, p, oldImg); } }
-        function finishUpdStudent(n, p, imgData) { var s = getDB('qa_s'); for(var i=0; i<s.length; i++) if(s[i].id == editTargetId){ s[i].name = n; s[i].password = p; s[i].img = imgData; } setDB('qa_s', s); closeModal('modal-upd-student'); loadAdminDashboard(); alert("Updated!"); }
-
-        function saveTeacher() { var n = document.getElementById('add-t-name').value.trim(); var c = document.getElementById('add-t-course').value; var p = document.getElementById('add-t-pass').value.trim(); if(!n || !c || !p) return alert('Fill fields!'); var file = document.getElementById('add-t-img').files[0]; if(file){ var r = new FileReader(); r.onload = function(e){ try{ finishSaveTeacher(n,c,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { finishSaveTeacher(n,c,p,""); } }
-        function finishSaveTeacher(n, c, p, imgData) { var t = getDB('qa_t'); t.push({ id: generateId(), name: n, course: c, password: p, img: imgData }); setDB('qa_t', t); closeModal('modal-add-teacher'); loadAdminDashboard(); }
-        function saveStudent() { var n = document.getElementById('add-s-name').value.trim(); var c = document.getElementById('add-s-course').value; var tid = document.getElementById('add-s-teacher').value; var p = document.getElementById('add-s-pass').value.trim(); if(!n || !c || !tid || !p) return alert('Fill fields!'); var file = document.getElementById('add-s-img').files[0]; if(file){ var r = new FileReader(); r.onload = function(e){ try{ finishSaveStudent(n,c,tid,p,e.target.result); }catch(err){ alert("Image too large!"); }}; r.readAsDataURL(file); } else { finishSaveStudent(n,c,tid,p,""); } }
-        function finishSaveStudent(n, c, tid, p, imgData) { var s = getDB('qa_s'); s.push({ id: generateId(), name: n, course: c, teacherId: tid, password: p, img: imgData }); setDB('qa_s', s); closeModal('modal-add-student'); loadAdminDashboard(); }
-        
-        function saveCourse() { 
-            var n = document.getElementById('add-c-name').value.trim(); 
-            var ur = document.getElementById('add-c-urdu').value.trim(); 
-            var desc = document.getElementById('add-c-desc').value.trim(); 
-            if(!n) return alert('Name required!'); 
-            var c = getDB('qa_c'); 
-            c.push({ id: generateId(), name: n, nameUrdu: ur, desc: desc, fee: 'Paid' }); 
-            setDB('qa_c', c); 
-            closeModal('modal-add-course'); 
-            loadAdminDashboard(); 
-            renderCoursesLanding(); 
-        }
-
-        function loadTeacherDashboard() { document.getElementById('teacher-name-display').innerHTML = curTeacher.name; document.getElementById('t-dash-img').src = curTeacher.img || placeholderImg; var ss = getDB('qa_s'); var sel = document.getElementById('ts-select'); sel.innerHTML = '<option value="all">All Students</option>'; for(var i=0; i<ss.length; i++) if(ss[i].teacherId === curTeacher.id) sel.innerHTML += '<option value="' + ss[i].id + '">' + ss[i].name + '</option>'; }
-        function handlePostNotice() { var txt = document.getElementById('ts-notice-text').value; var tgt = document.getElementById('ts-select').value; if(!txt) return alert("Write notice!"); var n = getDB('qa_n'); n.push({ id: generateId(), teacherId: curTeacher.id, studentId: tgt, text: txt, date: new Date().toLocaleDateString() }); setDB('qa_n', n); document.getElementById('ts-notice-text').value=''; alert("Notice Posted!"); }
-        
-        function handlePDFUpload() { 
-            var title = document.getElementById('ts-pdf-title').value; 
-            var tgt = document.getElementById('ts-select').value; 
-            var fileInput = document.getElementById('ts-pdf-file'); 
-            var file = fileInput.files[0]; 
-            
-            if(!title || !file) return alert("Select title and Document!"); 
-            if(file.size > 4 * 1024 * 1024) return alert("File size must be under 4MB!"); 
-            
-            var ext = file.name.split('.').pop(); 
-
-            var btn = document.getElementById('btn-pdf-upload'); 
-            var oldText = btn.innerHTML; 
-            btn.innerHTML = "Uploading to Cloud..."; 
-            btn.disabled = true;
-
-            var reader = new FileReader(); 
-            reader.onload = function(e){ 
-                var p = getDB('qa_p'); 
-                p.push({ 
-                    id: generateId(), 
-                    teacherId: curTeacher.id, 
-                    studentId: tgt, 
-                    name: title, 
-                    ext: ext, 
-                    data: e.target.result, 
-                    date: new Date().toLocaleDateString() 
-                }); 
-                
-                setDB('qa_p', p); 
-                document.getElementById('ts-pdf-title').value=''; fileInput.value=''; alert("File Uploaded Successfully!"); 
-                btn.innerHTML = oldText; btn.disabled = false;
-            }; 
-            reader.readAsDataURL(file); 
-        }
-
-        function loadStudentDashboard() { 
-            document.getElementById('student-name-display').innerHTML = curStudent.name; 
-            document.getElementById('s-dash-name').innerHTML = curStudent.name; 
-            document.getElementById('s-dash-img').src = curStudent.img || placeholderImg; 
-            document.getElementById('st-dash-course').innerHTML = getCourseName(curStudent.course, getDB('qa_c')); 
-            
-            var notices = getDB('qa_n'); var nList = document.getElementById('st-notices-list'); nList.innerHTML = ''; 
-            for(var i=0; i<notices.length; i++) {
-                if(notices[i].teacherId === curStudent.teacherId && (notices[i].studentId === 'all' || notices[i].studentId === curStudent.id)) {
-                    nList.innerHTML += "<li class='p-3 bg-yellow-50 border-l-4 border-gold text-navy text-sm shadow rounded'><strong>" + notices[i].date + ":</strong> " + notices[i].text + "</li>";
-                }
-            }
-            if(notices.length === 0 || nList.innerHTML === '') nList.innerHTML = "<li class='text-gray-400 text-sm'>Koi notice nahi abhi.</li>";
-
-            var pdfs = getDB('qa_p'); var pList = document.getElementById('st-downloads-list'); pList.innerHTML = '';
-            for(var j=0; j<pdfs.length; j++) {
-                if(pdfs[j].teacherId === curStudent.teacherId && (pdfs[j].studentId === 'all' || pdfs[j].studentId === curStudent.id)) {
-                    pList.innerHTML += "<li class='p-3 bg-emerald-50 border-l-4 border-emerald text-navy text-sm shadow rounded flex justify-between items-center'><div><i class='fas fa-file-pdf text-emerald mr-2'></i><strong>" + pdfs[j].name + "</strong><span class='text-gray-400 text-xs ml-2'>(" + pdfs[j].date + ")</span></div><a href='" + pdfs[j].data + "' download='" + pdfs[j].name + "." + pdfs[j].ext + "' class='bg-emerald text-white px-3 py-1 rounded text-xs font-bold hover:bg-emerald/80 transition no-underline'>Download</a></li>";
-                }
-            }
-            if(pdfs.length === 0 || pList.innerHTML === '') pList.innerHTML = "<li class='text-gray-400 text-sm'>Koi material upload nahi hua abhi.</li>";
-
-            /* Load the new Question Section */
-            loadQuestionSection();
-        }
-
-        /* ==================== START APP ==================== */
         initCloudDB();
     </script>
 </body>
